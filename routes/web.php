@@ -6,19 +6,14 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 | Web Routes
 |--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
 */
 
-// Ruta 1: La Landing Page (Bienvenida)
+// 1. Ruta de la Portada (Bienvenida)
 Route::get('/', function () {
     return view('welcome');
 });
 
-// Ruta 2: El catálogo de festivales que hicimos antes
+// 2. Ruta Pública del Catálogo de Festivales (La que faltaba)
 Route::get('/festivales', function () {
     $festivals = [
         [
@@ -39,10 +34,23 @@ Route::get('/festivales', function () {
             'name' => 'Resurrection Fest',
             'location' => 'Viveiro, Galicia',
             'date' => '25-28 Junio 2026',
-            'image' => 'https://images.unsplash.com/photo-1540039155732-d688d01d4a3b?auto=format&fit=crop&q=80&w=1000',
+            'image' => 'https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?auto=format&fit=crop&q=80&w=1000',
             'style' => 'Metal / Punk'
         ],
     ];
 
     return view('festivals.index', compact('festivals'));
 });
+
+// 3. Ruta del Panel de Control (Protegida)
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth'])->name('dashboard');
+
+// 4. Ruta para Crear Festivales (Protegida)
+Route::get('/festivales/crear', function () {
+    return view('festivals.create');
+})->middleware(['auth'])->name('festivals.create');
+
+// 5. Rutas de Login y Registro de Laravel Breeze
+require __DIR__.'/auth.php';
