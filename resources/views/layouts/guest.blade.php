@@ -92,10 +92,6 @@
             </div>
 
         </div>
-
-        <div class="mt-10 text-xs text-gray-500 font-mono tracking-widest uppercase">
-            SECURE LOGIN // V.1.0
-        </div>
     </div>
 
 </body>
