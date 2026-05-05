@@ -14,8 +14,13 @@ class CreateFestivalsTable extends Migration
     public function up()
     {
         Schema::create('festivals', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
+            $table->id(); // Crea el ID autonumérico
+            $table->string('name'); // Columna para el nombre
+            $table->string('location'); // Columna para la ciudad
+            $table->string('style'); // Columna para el estilo musical
+            $table->date('date'); // Columna para la fecha
+            $table->string('image_url'); // Columna para la ruta de la foto
+            $table->timestamps(); // Crea created_at y updated_at automáticamente
         });
     }
 

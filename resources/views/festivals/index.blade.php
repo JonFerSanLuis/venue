@@ -53,8 +53,7 @@
 
                 <div class="relative h-64 overflow-hidden">
                     <div class="absolute inset-0 bg-black/40 group-hover:bg-transparent transition-colors duration-500 z-10"></div>
-                    <img src="{{ $festival['image'] }}" alt="{{ $festival['name'] }}" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700">
-
+                        <img src="{{ asset('storage/' . $festival->image_url) }}" alt="{{ $festival->name }}" class="w-full h-64 object-cover transform group-hover:scale-110 transition duration-500">
                     <div class="absolute top-4 right-4 z-20 bg-black/80 backdrop-blur-md border border-gray-700 text-pink-400 text-xs font-bold uppercase tracking-widest px-3 py-1 rounded">
                         {{ $festival['style'] }}
                     </div>

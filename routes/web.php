@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\FestivalController;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,39 +14,20 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-// 2. Ruta Pública del Catálogo de Festivales (La que faltaba)
-Route::get('/festivales', function () {
-    $festivals = [
-        [
-            'name' => 'Mad Cool Festival',
-            'location' => 'Madrid, España',
-            'date' => '10-13 Julio 2026',
-            'image' => 'https://images.unsplash.com/photo-1459749411175-04bf5292ceea?auto=format&fit=crop&q=80&w=1000',
-            'style' => 'Indie / Rock'
-        ],
-        [
-            'name' => 'Primavera Sound',
-            'location' => 'Barcelona, España',
-            'date' => '28 Mayo - 1 Jun 2026',
-            'image' => 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&q=80&w=1000',
-            'style' => 'Alternativo'
-        ],
-        [
-            'name' => 'Resurrection Fest',
-            'location' => 'Viveiro, Galicia',
-            'date' => '25-28 Junio 2026',
-            'image' => 'https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?auto=format&fit=crop&q=80&w=1000',
-            'style' => 'Metal / Punk'
-        ],
-    ];
+// Ruta pública para ver el catálogo de festivales
+Route::get('/festivales', [FestivalController::class, 'index'])->name('festivals.index');
 
-    return view('festivals.index', compact('festivals'));
-});
-
-// 3. Ruta del Panel de Control (Protegida)
+// Busca tu ruta del dashboard y cámbiala por esta:
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    // Buscamos los festivales en la base de datos
+    $festivals = \App\Models\Festival::latest()->get();
+
+    // Se los pasamos a la vista
+    return view('dashboard', compact('festivals'));
 })->middleware(['auth'])->name('dashboard');
+
+// DE PASO, AÑADE ESTA LÍNEA JUSTO DEBAJO PARA EL BOTÓN DE ELIMINAR:
+Route::delete('/festivales/{id}', [App\Http\Controllers\FestivalController::class, 'destroy'])->middleware(['auth'])->name('festivals.destroy');
 
 // 4. Ruta para Crear Festivales (Protegida)
 Route::get('/festivales/crear', function () {
@@ -54,3 +36,6 @@ Route::get('/festivales/crear', function () {
 
 // 5. Rutas de Login y Registro de Laravel Breeze
 require __DIR__.'/auth.php';
+
+// Ruta para recibir los datos del formulario y guardarlos (POST)
+Route::post('/festivales', [FestivalController::class, 'store'])->middleware(['auth'])->name('festivals.store');

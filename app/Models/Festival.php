@@ -8,4 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 class Festival extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'name',
+        'location',
+        'style',
+        'date',
+        'image_url',
+    ];
 }
