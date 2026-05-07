@@ -45,6 +45,48 @@ class FestivalController extends Controller
         return redirect()->route('dashboard')->with('success', '¡Festival creado correctamente!');
     }
 
+    // Muestra el formulario con los datos actuales
+    public function edit($id)
+    {
+        $festival = Festival::findOrFail($id);
+        return view('festivals.edit', compact('festival'));
+    }
+
+    // Guarda los cambios en la base de datos
+    public function update(Request $request, $id)
+    {
+        $festival = Festival::findOrFail($id);
+
+        // 1. Validamos. La foto NO es required al editar.
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'location' => 'required|string|max:255',
+            'style' => 'required|string|max:255',
+            'start_date' => 'required|date',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+        ]);
+
+        // 2. Si sube una foto nueva, borramos la vieja y guardamos la nueva
+        if ($request->hasFile('image')) {
+            if (\Illuminate\Support\Facades\Storage::disk('public')->exists($festival->image_url)) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($festival->image_url);
+            }
+            $festival->image_url = $request->file('image')->store('festivals', 'public');
+        }
+
+        // 3. Actualizamos los campos de texto
+        $festival->update([
+            'name' => $request->name,
+            'location' => $request->location,
+            'style' => $request->style,
+            'date' => $request->start_date,
+            // La imagen se guarda sola por la línea 2 si hubo cambio
+        ]);
+
+        // 4. Volvepe al dashboard
+        return redirect()->route('dashboard')->with('success', '¡Festival actualizado correctamente!');
+    }
+
     // Función para eliminar festivales
     public function destroy($id)
     {
@@ -62,4 +104,5 @@ class FestivalController extends Controller
         // 4. Recargamos la página
         return redirect()->route('dashboard')->with('success', '¡Festival eliminado con éxito!');
     }
+
 }
