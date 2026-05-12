@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\FestivalController;
+use App\Http\Controllers\ArtistController;
 
 /*
 |--------------------------------------------------------------------------
@@ -9,58 +10,66 @@ use App\Http\Controllers\FestivalController;
 |--------------------------------------------------------------------------
 */
 
-// 1. Ruta de la Portada (Bienvenida)
+// ==========================================
+// 1. ZONA PÚBLICA (Acceso para todo el mundo)
+// ==========================================
+
 Route::get('/', function () {
     return view('welcome');
 });
 
-// Ruta pública para ver el catálogo de festivales
 Route::get('/festivales', [FestivalController::class, 'index'])->name('festivals.index');
 
-// AQUI VA TODA LA LOGICA DEL DASHBOARD
-Route::get('/dashboard', function () {
-    // Traemos los festivales y los artistas
-    $festivals = \App\Models\Festival::latest()->get();
-    $artists = \App\Models\Artist::latest()->get(); // <--- Nueva línea
 
-    // Estadísticas
-    $promotersCount = \App\Models\User::count();
-    $artistsCount = $artists->count();
-    $upcomingCount = \App\Models\Festival::where('date', '>=', now())->count();
-    $lastFestival = \App\Models\Festival::latest()->first()?->name ?? 'Ninguno';
-    $uniqueLocations = \App\Models\Festival::distinct('location')->count('location');
+// ==========================================
+// 2. ZONA DE ADMINISTRACIÓN (Solo Admins)
+// ==========================================
 
-    return view('dashboard', compact(
-        'festivals',
-        'artists', // <--- Lo pasamos a la vista
-        'promotersCount',
-        'artistsCount',
-        'upcomingCount',
-        'lastFestival',
-        'uniqueLocations'
-    ));
-})->middleware(['auth'])->name('dashboard');
+// Al envolver todo en este 'group', le ponemos el portero a TODAS estas rutas de golpe
+Route::middleware(['auth', 'admin'])->group(function () {
 
-// DE PASO, AÑADE ESTA LÍNEA JUSTO DEBAJO PARA EL BOTÓN DE ELIMINAR:
-Route::delete('/festivales/{id}', [App\Http\Controllers\FestivalController::class, 'destroy'])->middleware(['auth'])->name('festivals.destroy');
+    // --- DASHBOARD ---
+    Route::get('/dashboard', function () {
+        $festivals = \App\Models\Festival::latest()->get();
+        $artists = \App\Models\Artist::latest()->get();
 
-// Rutas para EDITAR un festival
-Route::get('/festivales/{id}/editar', [App\Http\Controllers\FestivalController::class, 'edit'])->middleware(['auth'])->name('festivals.edit');
-Route::put('/festivales/{id}', [App\Http\Controllers\FestivalController::class, 'update'])->middleware(['auth'])->name('festivals.update');
+        $promotersCount = \App\Models\User::where('role_id', 1)->count(); // ID 1 suele ser Admin en tu Seeder
+        $artistsCount = $artists->count();
+        $upcomingCount = \App\Models\Festival::where('date', '>=', now())->count();
+        $lastFestival = \App\Models\Festival::latest()->first()?->name ?? 'Ninguno';
+        $uniqueLocations = \App\Models\Festival::distinct('location')->count('location');
 
-// 4. Ruta para Crear Festivales (Protegida)
-Route::get('/festivales/crear', function () {
-    return view('festivals.create');
-})->middleware(['auth'])->name('festivals.create');
+        return view('dashboard', compact(
+            'festivals', 'artists', 'promotersCount',
+            'artistsCount', 'upcomingCount', 'lastFestival', 'uniqueLocations'
+        ));
+    })->name('dashboard');
 
-// 5. Rutas de Login y Registro de Laravel Breeze
+
+    // --- FESTIVALES ---
+    Route::get('/festivales/crear', function () { return view('festivals.create'); })->name('festivals.create');
+    Route::post('/festivales', [FestivalController::class, 'store'])->name('festivals.store');
+    Route::get('/festivales/{id}/editar', [FestivalController::class, 'edit'])->name('festivals.edit');
+    Route::put('/festivales/{id}', [FestivalController::class, 'update'])->name('festivals.update');
+    Route::delete('/festivales/{id}', [FestivalController::class, 'destroy'])->name('festivals.destroy');
+
+
+    // --- CARTEL (LINEUP) ---
+    Route::get('/festivales/{id}/cartel', [FestivalController::class, 'lineup'])->name('festivals.lineup');
+    Route::post('/festivales/{id}/cartel', [FestivalController::class, 'storeLineup'])->name('festivals.lineup.store');
+    Route::delete('/festivales/{festival_id}/cartel/{artist_id}', [FestivalController::class, 'destroyLineup'])->name('festivals.lineup.destroy');
+
+
+    // --- ARTISTAS ---
+    Route::get('/artistas/crear', [ArtistController::class, 'create'])->name('artists.create');
+    Route::post('/artistas', [ArtistController::class, 'store'])->name('artists.store');
+    Route::get('/artistas/{id}/editar', [ArtistController::class, 'edit'])->name('artists.edit');
+    Route::put('/artistas/{id}', [ArtistController::class, 'update'])->name('artists.update');
+    Route::delete('/artistas/{id}', [ArtistController::class, 'destroy'])->name('artists.destroy');
+
+});
+
+// ==========================================
+// 3. RUTAS DE AUTENTICACIÓN (Breeze)
+// ==========================================
 require __DIR__.'/auth.php';
-
-// Ruta para recibir los datos del formulario y guardarlos (POST)
-Route::post('/festivales', [FestivalController::class, 'store'])->middleware(['auth'])->name('festivals.store');
-
-// Artistas
-// Rutas para Artistas
-Route::get('/artistas/crear', [App\Http\Controllers\ArtistController::class, 'create'])->middleware(['auth'])->name('artists.create');
-Route::post('/artistas', [App\Http\Controllers\ArtistController::class, 'store'])->middleware(['auth'])->name('artists.store');
-Route::delete('/artistas/{id}', [App\Http\Controllers\ArtistController::class, 'destroy'])->middleware(['auth'])->name('artists.destroy');

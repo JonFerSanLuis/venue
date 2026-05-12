@@ -21,6 +21,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role_id', // <--- CAMBIADO: ahora usamos el ID de la tabla roles
     ];
 
     /**
@@ -41,4 +42,23 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    // --- NUEVAS FUNCIONES PARA LOS ROLES ---
+
+    /**
+     * Relación: Un usuario pertenece a un rol
+     */
+    public function role()
+    {
+        return $this->belongsTo(Role::class);
+    }
+
+    /**
+     * Comprueba si el usuario es administrador
+     */
+    public function isAdmin()
+    {
+        // Verifica si el usuario tiene un rol asignado y si su nombre es 'admin'
+        return $this->role && $this->role->name === 'admin';
+    }
 }

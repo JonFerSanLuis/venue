@@ -105,4 +105,55 @@ class FestivalController extends Controller
         return redirect()->route('dashboard')->with('success', '¡Festival eliminado con éxito!');
     }
 
+    // Mostrar la página del cartel
+    public function lineup($id)
+    {
+        // Buscamos el festival y nos traemos también a sus artistas ordenados por hora
+        $festival = \App\Models\Festival::with(['artists' => function($query) {
+            $query->orderBy('artist_festival.performance_start', 'asc');
+        }])->findOrFail($id);
+
+        // Traemos todos los artistas para el desplegable de añadir
+        $allArtists = \App\Models\Artist::all();
+
+        return view('festivals.lineup', compact('festival', 'allArtists'));
+    }
+
+    // Guardar un artista en el cartel evitando solapamientos
+    public function storeLineup(\Illuminate\Http\Request $request, $id)
+    {
+        $festival = \App\Models\Festival::findOrFail($id);
+
+        $newStart = $request->start_time;
+        $newEnd = $request->end_time;
+
+        // Comprobamos si hay algún artista cuyo horario se cruce con el nuevo
+        $overlap = $festival->artists()
+            ->wherePivot('performance_start', '<', $newEnd)
+            ->wherePivot('performance_end', '>', $newStart)
+            ->exists();
+
+        if ($overlap) {
+            // Si se pisan, devolvemos al usuario a la vista con un mensaje de error
+            return back()->withErrors(['time' => 'El horario se solapa con la actuación de otro artista.']);
+        }
+
+        // Si no se pisan, lo guardamos
+        $festival->artists()->attach($request->artist_id, [
+            'performance_start' => $newStart,
+            'performance_end' => $newEnd
+        ]);
+
+        return back()->with('success', '¡Artista añadido al cartel!');
+    }
+
+    // Quitar un artista del cartel
+    public function destroyLineup($festival_id, $artist_id)
+    {
+        $festival = \App\Models\Festival::findOrFail($festival_id);
+        // detach() borra la relación en la tabla pivote
+        $festival->artists()->detach($artist_id);
+
+        return back()->with('success', 'Actuación eliminada del cartel.');
+    }
 }

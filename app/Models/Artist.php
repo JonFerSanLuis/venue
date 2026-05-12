@@ -16,4 +16,10 @@ class Artist extends Model
         'country',
         'image_url',
     ];
+
+    public function festivals()
+    {
+        // Un artista asiste a muchos festivales
+        return $this->belongsToMany(Festival::class)->withPivot('performance_start', 'performance_end')->withTimestamps();
+    }
 }

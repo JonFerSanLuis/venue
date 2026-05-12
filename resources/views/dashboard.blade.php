@@ -65,8 +65,7 @@
                         </a>
 
                         <div class="relative">
-                            <input type="text" placeholder="Buscar festival..." class="border border-gray-300 rounded-md pl-3 pr-10 py-1.5 text-sm focus:ring-gray-900 focus:border-gray-900 block w-full sm:text-sm">
-                            <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                <input type="text" id="search-festivals" placeholder="Buscar festival..." class="border border-gray-300 rounded-md pl-3 pr-10 py-1.5 text-sm focus:ring-gray-900 focus:border-gray-900 block w-full sm:text-sm">                            <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
                                 <svg class="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                             </div>
                         </div>
@@ -85,8 +84,7 @@
                         </thead>
                         <tbody class="divide-y divide-gray-100">
                             @forelse($festivals as $festival)
-                                <tr class="hover:bg-gray-50 transition-colors">
-                                    <td class="px-6 py-4">
+                            <tr class="hover:bg-gray-50 transition-colors festival-row">                                    <td class="px-6 py-4">
                                         <div class="flex items-center gap-4">
                                             <img src="{{ asset('storage/' . $festival->image_url) }}" class="w-12 h-12 rounded object-cover border border-gray-200 shadow-sm">
                                             <div>
@@ -105,6 +103,10 @@
                                     </td>
                                     <td class="px-6 py-4 text-center">
                                         <div class="flex justify-center gap-2">
+                                            <a href="{{ route('festivals.lineup', $festival->id) }}" class="inline-flex items-center px-3 py-1.5 shadow-sm text-xs font-bold uppercase rounded-sm text-white bg-gray-900 hover:bg-black transition-colors mr-2">
+                                                LINEUP
+                                            </a>
+
                                             <a href="{{ route('festivals.edit', $festival->id) }}" class="inline-flex items-center px-3 py-1.5 border border-gray-300 shadow-sm text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900">
                                                 Editar
                                             </a>
@@ -144,8 +146,7 @@
                         </a>
 
                         <div class="relative">
-                            <input type="text" placeholder="Buscar artista..." class="border border-gray-300 rounded-md pl-3 pr-10 py-1.5 text-sm focus:ring-gray-900 focus:border-gray-900 block w-full sm:text-sm">
-                            <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                <input type="text" id="search-artists" placeholder="Buscar artista..." class="border border-gray-300 rounded-md pl-3 pr-10 py-1.5 text-sm focus:ring-gray-900 focus:border-gray-900 block w-full sm:text-sm">                            <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
                                 <svg class="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                             </div>
                         </div>
@@ -164,8 +165,7 @@
                         </thead>
                         <tbody class="divide-y divide-gray-100">
                             @forelse($artists as $artist)
-                                <tr class="hover:bg-gray-50 transition-colors">
-                                    <td class="px-6 py-4">
+                                <tr class="hover:bg-gray-50 transition-colors artist-row">                                    <td class="px-6 py-4">
                                         <div class="flex items-center gap-4">
                                             <img src="{{ asset('storage/' . ($artist->image_url ?? 'default.jpg')) }}" class="w-12 h-12 rounded object-cover border border-gray-200 shadow-sm">
                                             <div>
@@ -184,12 +184,16 @@
                                     </td>
                                     <td class="px-6 py-4 text-center">
                                         <div class="flex justify-center gap-2">
-                                            <a href="#" class="inline-flex items-center px-3 py-1.5 border border-gray-300 shadow-sm text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900">
+                                            <a href="{{ route('artists.edit', $artist->id) }}" class="inline-flex items-center px-3 py-1.5 border border-gray-300 shadow-sm text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900">
                                                 Editar
                                             </a>
-                                            <button class="inline-flex items-center px-3 py-1.5 border border-transparent shadow-sm text-xs font-medium rounded text-red-700 bg-red-50 hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
-                                                Eliminar
-                                            </button>
+                                            <form action="{{ route('artists.destroy', $artist->id) }}" method="POST" class="inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="inline-flex items-center px-3 py-1.5 border border-transparent shadow-sm text-xs font-medium rounded text-red-700 bg-red-50 hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500" onclick="return confirm('¿Seguro que quieres borrar a este artista?')">
+                                                    Eliminar
+                                                </button>
+                                            </form>
                                         </div>
                                     </td>
                                 </tr>
@@ -207,4 +211,40 @@
 
         </div>
     </div>
+
+    <script>
+        //Script para que funcione el buscador del panel de administración
+        document.addEventListener('DOMContentLoaded', function () {
+
+            // Buscador de Festivales
+            const searchFestivals = document.getElementById('search-festivals');
+            if (searchFestivals) {
+                searchFestivals.addEventListener('input', function(e) {
+                    const term = e.target.value.toLowerCase(); // Lo que escribes en minúsculas
+                    const rows = document.querySelectorAll('.festival-row'); // Todas las filas de festivales
+
+                    rows.forEach(row => {
+                        // Comprueba si el texto de la fila contiene lo que has escrito
+                        const text = row.innerText.toLowerCase();
+                        row.style.display = text.includes(term) ? '' : 'none';
+                    });
+                });
+            }
+
+            // Buscador de Artistas
+            const searchArtists = document.getElementById('search-artists');
+            if (searchArtists) {
+                searchArtists.addEventListener('input', function(e) {
+                    const term = e.target.value.toLowerCase(); // Lo que escribes en el buscador en minuscula
+                    const rows = document.querySelectorAll('.artist-row'); // Todas las filas de artistas
+
+                    rows.forEach(row => {
+                        // Comprueba si el texto de la fila contiene lo que has escrito
+                        const text = row.innerText.toLowerCase();
+                        row.style.display = text.includes(term) ? '' : 'none';
+                    });
+                });
+            }
+        });
+    </script>
 </x-app-layout>
