@@ -9,15 +9,15 @@ class DatabaseSeeder extends Seeder
 {
     public function run()
     {
-        // 1. Primero llamamos al seeder de roles (que creamos antes)
+        // Llamamos al seeder de roles
         $this->call(RoleSeeder::class);
 
-        // 2. Creamos al usuario Administrador por defecto
+        // Crear al usuario Administrador
         \App\Models\User::create([
             'name' => 'Jon Admin',
             'email' => 'admin@venue.com',
-            'password' => Hash::make('12345678'), // Encriptamos la contraseña
-            'role_id' => 1, // Le asignamos el rol de admin directamente
+            'password' => Hash::make('12345678'), // Encriptar la contraseña
+            'role_id' => 1, // Asignar el rol de admin
         ]);
     }
 }

@@ -1,87 +1,173 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VENUE/ - Cartelera de Eventos</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Cartelera 2026 - VENUE/</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .fade-in { animation: fadeIn ease 1s; }
+        @keyframes fadeIn { 0% { opacity: 0; transform: translateY(10px); } 100% { opacity: 1; transform: translateY(0); } }
+    </style>
 </head>
 <body class="bg-black text-white font-sans antialiased selection:bg-pink-500 selection:text-white">
 
-    <nav class="bg-black/80 backdrop-blur-md border-b border-gray-800 sticky top-0 z-50">
-        <div class="container mx-auto flex justify-between items-center px-6 py-4">
-            <a href="{{ url('/') }}" class="text-3xl font-black tracking-tighter text-white hover:text-pink-500 transition-colors">
+    <nav class="fixed top-0 w-full z-50 bg-black/80 backdrop-blur-md border-b border-white/5">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+
+            <a href="{{ url('/') }}" class="text-2xl font-black tracking-tighter text-white hover:text-pink-500 transition-colors">
                 VENUE<span class="text-pink-500">/</span>
             </a>
 
-            <div class="space-x-6 flex items-center">
-                <a href="{{ url('/') }}" class="hidden sm:block text-sm font-bold uppercase tracking-widest text-gray-400 hover:text-pink-400 transition">Inicio</a>
-                <span class="hidden sm:block text-gray-800">|</span>
+            <div class="flex items-center gap-6">
+                <span class="text-sm font-bold uppercase tracking-widest text-pink-500">Cartelera</span>
 
                 @auth
-                    <a href="{{ url('/dashboard') }}" class="text-sm font-bold uppercase tracking-widest text-pink-500 hover:text-white transition">Mi Panel</a>
+                    @if(Auth::user()->role_id == 1)
+                        <a href="{{ route('dashboard') }}" class="text-sm font-bold uppercase tracking-widest text-gray-300 hover:text-pink-400 transition-colors">
+                            Panel Admin
+                        </a>
+                    @endif
+                    <span class="text-gray-600">|</span>
+                    <span class="text-sm text-gray-400">Hola, <strong class="text-white">{{ Auth::user()->name }}</strong></span>
+                    <form method="POST" action="{{ route('logout') }}" class="inline m-0">
+                        @csrf
+                        <button type="submit" class="text-sm font-bold uppercase tracking-widest text-gray-500 hover:text-red-400 transition-colors" style="background:none!important;padding:0!important;margin:0!important;border:none!important;box-shadow:none!important;letter-spacing:0.1em;">
+                            Salir
+                        </button>
+                    </form>
                 @else
-                    <a href="{{ route('login') }}" class="text-sm font-bold uppercase tracking-widest text-gray-300 hover:text-pink-400 transition">Login</a>
-                    <a href="{{ route('register') }}" class="bg-transparent border border-pink-500 text-pink-500 px-5 py-2 text-xs font-bold uppercase tracking-widest hover:bg-pink-500 hover:text-white transition-all rounded">Registro</a>
+                    <a href="{{ route('login') }}" class="text-sm font-bold uppercase tracking-widest text-gray-300 hover:text-pink-400 transition-colors">
+                        Entrar
+                    </a>
+                    <a href="{{ route('register') }}" class="border border-pink-500 text-pink-500 px-4 py-1.5 text-sm font-bold uppercase tracking-widest hover:bg-pink-500 hover:text-white transition-all">
+                        Registro
+                    </a>
                 @endauth
             </div>
         </div>
     </nav>
 
-    <main class="container mx-auto px-6 py-12 max-w-7xl">
+    <div class="pt-32 pb-16 text-center px-4 relative">
+        <div class="absolute inset-0 bg-gradient-to-b from-pink-900/10 to-transparent pointer-events-none"></div>
+        <span class="block text-pink-500 font-bold uppercase tracking-[0.4em] text-xs mb-3">Próximos Eventos</span>
+        <h1 class="text-5xl md:text-7xl font-black uppercase tracking-tighter leading-none">
+            Cartelera <span class="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500">2026/</span>
+        </h1>
+        <p class="text-gray-400 mt-4 text-sm uppercase tracking-widest">{{ $festivals->count() }} eventos · Temporada oficial</p>
+    </div>
 
-        <div class="flex flex-col md:flex-row justify-between items-end mb-12 border-b border-gray-800 pb-6">
-            <div>
-                <span class="text-pink-500 font-bold uppercase tracking-[0.3em] text-xs block mb-2">Directorio Global</span>
-                <h1 class="text-4xl md:text-5xl font-black text-white uppercase tracking-tighter">Próximos <span class="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-yellow-500">Eventos</span></h1>
-            </div>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-24">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 fade-in">
+            @forelse ($festivals as $festival)
+                <div class="bg-gray-950 border border-gray-800 rounded-sm overflow-hidden group hover:border-pink-600 transition-all duration-500 shadow-2xl">
 
-            <div class="mt-6 md:mt-0 w-full md:w-auto">
-                <div class="relative">
-                    <input type="text" placeholder="BUSCAR FESTIVAL..." class="w-full md:w-72 bg-gray-900 border border-gray-700 text-white px-4 py-3 rounded-lg text-sm font-mono focus:border-pink-500 focus:outline-none focus:ring-1 focus:ring-pink-500 transition">
-                    <div class="absolute right-3 top-3 text-gray-500">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                    <div class="relative h-64 overflow-hidden">
+                        <img src="{{ asset('storage/' . $festival->image_url) }}"
+                             alt="{{ $festival->name }}"
+                             class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-75 group-hover:opacity-100">
+
+                        <div class="absolute top-4 left-4 bg-pink-600 text-white text-[10px] font-black uppercase px-3 py-1 tracking-widest shadow-lg">
+                            {{ \Carbon\Carbon::parse($festival->date)->format('d M Y') }}
+                        </div>
+
+                        <div class="absolute inset-0 bg-gradient-to-t from-gray-950 via-transparent to-transparent"></div>
+                    </div>
+
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-1">
+                            <h3 class="text-xl font-black text-white uppercase tracking-tight leading-tight">{{ $festival->name }}</h3>
+                        </div>
+                        <div class="flex items-center gap-3 mt-2 mb-5">
+                            <span class="text-gray-400 text-xs uppercase tracking-widest flex items-center gap-1">
+                                <svg class="w-3 h-3 text-pink-500 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/></svg>
+                                {{ $festival->location }}
+                            </span>
+                            <span class="text-gray-600">·</span>
+                            <span class="text-pink-500 text-xs font-bold uppercase tracking-widest">{{ $festival->style }}</span>
+                        </div>
+
+                        {{-- Artistas del cartel (preview) --}}
+                        @if($festival->artists->count() > 0)
+                            <div class="mb-5 border-t border-gray-800 pt-4">
+                                <p class="text-[10px] font-bold uppercase tracking-widest text-gray-500 mb-2">Lineup</p>
+                                <div class="flex flex-wrap gap-1">
+                                    @foreach($festival->artists->take(4) as $artist)
+                                        <span class="text-[10px] bg-gray-800 text-gray-300 px-2 py-1 font-bold uppercase tracking-wide">
+                                            {{ $artist->name }}
+                                        </span>
+                                    @endforeach
+                                    @if($festival->artists->count() > 4)
+                                        <span class="text-[10px] bg-pink-600/20 text-pink-400 border border-pink-600/30 px-2 py-1 font-bold uppercase tracking-wide">
+                                            +{{ $festival->artists->count() - 4 }} más
+                                        </span>
+                                    @endif
+                                </div>
+                            </div>
+                        @endif
+
+                        {{-- Botones --}}
+                        <div class="grid grid-cols-2 gap-3">
+                            <button onclick="abrirModal('{{ asset('storage/' . $festival->image_url) }}', '{{ addslashes($festival->name) }}')"
+                                class="w-full bg-transparent border border-gray-700 text-white text-[10px] font-black uppercase py-3 tracking-widest hover:border-white hover:bg-white hover:text-black transition-all">
+                                Ver Cartelera
+                            </button>
+                            <a href="{{ route('festivals.show', $festival->id) }}"
+                                class="w-full bg-gradient-to-r from-pink-600 to-red-600 text-white text-[10px] font-black uppercase py-3 tracking-widest text-center hover:from-pink-500 hover:to-red-500 transition-all shadow-lg shadow-pink-900/30 flex items-center justify-center">
+                                Comprar Entradas
+                            </a>
+                        </div>
                     </div>
                 </div>
-            </div>
+            @empty
+                <div class="col-span-3 text-center py-24">
+                    <p class="text-gray-500 uppercase tracking-widest text-sm">No hay festivales disponibles aún.</p>
+                </div>
+            @endforelse
         </div>
+    </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-
-            @foreach($festivals as $festival)
-            <div class="group bg-gray-900/40 border border-gray-800 rounded-2xl overflow-hidden hover:border-pink-500/50 hover:shadow-[0_0_30px_rgba(236,72,153,0.15)] transition-all duration-300">
-
-                <div class="relative h-64 overflow-hidden">
-                    <div class="absolute inset-0 bg-black/40 group-hover:bg-transparent transition-colors duration-500 z-10"></div>
-                        <img src="{{ asset('storage/' . $festival->image_url) }}" alt="{{ $festival->name }}" class="w-full h-64 object-cover transform group-hover:scale-110 transition duration-500">
-                    <div class="absolute top-4 right-4 z-20 bg-black/80 backdrop-blur-md border border-gray-700 text-pink-400 text-xs font-bold uppercase tracking-widest px-3 py-1 rounded">
-                        {{ $festival['style'] }}
-                    </div>
-                </div>
-
-                <div class="p-6 relative">
-                    <div class="absolute top-0 left-6 right-6 h-px bg-gradient-to-r from-transparent via-gray-700 group-hover:via-pink-500 to-transparent transition-colors"></div>
-
-                    <div class="flex items-center text-pink-500 text-xs font-mono font-bold mb-3 uppercase tracking-widest">
-                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                        {{ $festival['date'] }}
-                    </div>
-
-                    <h3 class="text-2xl font-black text-white mb-2 uppercase tracking-tight group-hover:text-pink-400 transition-colors">{{ $festival['name'] }}</h3>
-
-                    <div class="flex items-center text-gray-400 text-sm mb-8 font-medium">
-                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.243-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                        {{ $festival['location'] }}
-                    </div>
-
-                    <button class="w-full bg-transparent border border-gray-700 text-white py-3 rounded-lg group-hover:bg-pink-600 group-hover:border-pink-600 uppercase tracking-widest font-bold text-xs transition-all">
-                        Ver Cartelera / Entradas
-                    </button>
-                </div>
-            </div>
-            @endforeach
-
+    {{-- ===== MODAL IMAGEN ===== --}}
+    <div id="modalCartelera" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/95">
+        <button onclick="cerrarModal()" class="absolute top-6 right-6 text-white hover:text-pink-500 transition-colors z-50">
+            <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+        </button>
+        <div class="absolute top-6 left-1/2 -translate-x-1/2 text-center pointer-events-none">
+            <span id="modalTitulo" class="text-white font-black uppercase tracking-widest text-sm"></span>
         </div>
-    </main>
+        <div id="modalContenido" class="max-w-4xl w-full relative">
+            <img id="imagenAmpliada" src="" class="w-full h-auto max-h-[85vh] object-contain shadow-2xl border border-gray-800">
+        </div>
+    </div>
+
+    <script>
+        const modal = document.getElementById('modalCartelera');
+        const imagen = document.getElementById('imagenAmpliada');
+        const titulo = document.getElementById('modalTitulo');
+        const contenido = document.getElementById('modalContenido');
+
+        function abrirModal(url, nombre) {
+            imagen.src = url;
+            titulo.textContent = nombre;
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function cerrarModal() {
+            modal.classList.add('hidden');
+            imagen.src = '';
+            document.body.style.overflow = 'auto';
+        }
+
+        modal.addEventListener('click', function(e) {
+            if (!contenido.contains(e.target)) cerrarModal();
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') cerrarModal();
+        });
+    </script>
 </body>
 </html>

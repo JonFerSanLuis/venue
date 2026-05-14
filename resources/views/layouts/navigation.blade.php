@@ -1,32 +1,51 @@
-<nav x-data="{ open: false }" class="bg-white border-b border-gray-100">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between h-16">
-            <div class="flex">
-                <div class="shrink-0 flex items-center text-2xl font-black tracking-tighter text-gray-900">
-                    <a href="{{ url('/') }}">
-                        VENUE<span class="text-pink-500">/</span>
-                    </a>
-                </div>
+<nav class="bg-white border-b border-gray-200 py-4 px-6">
+    <div class="max-w-7xl mx-auto flex justify-between items-center">
 
-                <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                    <a href="{{ route('dashboard') }}" class="inline-flex items-center px-1 pt-1 border-b-2 border-pink-500 text-sm font-medium leading-5 text-gray-900 focus:outline-none transition">
-                        DASHBOARD
-                    </a>
-                    <a href="#" class="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium leading-5 text-gray-500 hover:text-gray-700 transition">
-                        MIS FESTIVALES
-                    </a>
-                </div>
-            </div>
+        <div>
+            <a href="{{ url('/') }}" class="text-2xl font-black uppercase italic tracking-tighter">
+                VENUE<span class="text-pink-600">/</span>
+            </a>
+        </div>
 
-            <div class="hidden sm:flex sm:items-center sm:ml-6 space-x-4">
-                <span class="text-gray-600 text-sm font-bold uppercase">{{ Auth::user()->name }}</span>
-                <form method="POST" action="{{ route('logout') }}">
+        <div class="flex items-center gap-6">
+
+            <a href="{{ route('festivals.index') }}" class="text-sm font-bold text-gray-600 hover:text-black uppercase">
+                Cartelera
+            </a>
+
+            @auth
+                @if(Auth::user()->role_id == 1)
+                    <a href="{{ route('dashboard') }}" class="text-sm font-bold text-gray-600 hover:text-black uppercase">
+                        Panel Admin
+                    </a>
+                @endif
+
+                <span class="text-sm text-gray-400">|</span>
+
+                <span class="text-sm text-gray-800">
+                    Hola, <strong>{{ Auth::user()->name }}</strong>
+                </span>
+
+                <form method="POST" action="{{ route('logout') }}" class="m-0 p-0 inline">
                     @csrf
-                    <button type="submit" class="border border-gray-300 bg-white text-gray-700 px-4 py-2 rounded-md text-xs font-bold uppercase hover:bg-gray-50 transition">
-                        Desconectar
+                    <button type="submit" class="text-sm text-red-500 hover:text-red-700 font-bold uppercase">
+                        Salir
                     </button>
                 </form>
-            </div>
+            @endauth
+
+            @guest
+                <span class="text-sm text-gray-400">|</span>
+
+                <a href="{{ route('login') }}" class="text-sm font-bold text-gray-600 hover:text-black uppercase">
+                    Entrar
+                </a>
+
+                <a href="{{ route('register') }}" class="text-sm font-bold bg-black text-white px-4 py-2 hover:bg-gray-800 uppercase transition-colors">
+                    Registro
+                </a>
+            @endguest
+
         </div>
     </div>
 </nav>

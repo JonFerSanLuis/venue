@@ -19,7 +19,13 @@ class Festival extends Model
 
     public function artists()
     {
-        // Un festival tiene muchos artistas, y nos traemos sus horas de actuación
-        return $this->belongsToMany(Artist::class)->withPivot('performance_start', 'performance_end')->withTimestamps();
+        return $this->belongsToMany(Artist::class)
+            ->withPivot('performance_start', 'performance_end')
+            ->withTimestamps();
+    }
+
+    public function ticketTypes()
+    {
+        return $this->hasMany(TicketType::class);
     }
 }
