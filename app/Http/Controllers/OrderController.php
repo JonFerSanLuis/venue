@@ -15,12 +15,10 @@ class OrderController extends Controller
         $this->middleware('auth');
     }
 
-    // Mostrar el checkout para un tipo de entrada
     public function checkout($festival_id, $ticket_type_id)
     {
-        $festival = Festival::with('ticketTypes')->findOrFail($festival_id);
-        $ticketType = TicketType::where('festival_id', $festival_id)
-            ->findOrFail($ticket_type_id);
+        $festival   = Festival::with('ticketTypes')->findOrFail($festival_id);
+        $ticketType = TicketType::where('festival_id', $festival_id)->findOrFail($ticket_type_id);
 
         if (!$ticketType->isAvailable()) {
             return redirect()->route('festivals.show', $festival_id)
@@ -30,11 +28,9 @@ class OrderController extends Controller
         return view('orders.checkout', compact('festival', 'ticketType'));
     }
 
-    // Procesar la compra
     public function store(Request $request, $festival_id, $ticket_type_id)
     {
-        $ticketType = TicketType::where('festival_id', $festival_id)
-            ->findOrFail($ticket_type_id);
+        $ticketType = TicketType::where('festival_id', $festival_id)->findOrFail($ticket_type_id);
 
         $request->validate([
             'quantity'    => 'required|integer|min:1|max:10',
@@ -43,7 +39,6 @@ class OrderController extends Controller
             'buyer_phone' => 'nullable|string|max:20',
         ]);
 
-        // Comprobar disponibilidad con la cantidad solicitada
         if ($ticketType->availableCount() < $request->quantity) {
             return back()->withErrors([
                 'quantity' => "Solo quedan {$ticketType->availableCount()} entradas disponibles."
@@ -64,12 +59,10 @@ class OrderController extends Controller
         return redirect()->route('orders.confirmation', $order->id);
     }
 
-    // Página de confirmación
     public function confirmation($order_id)
     {
         $order = Order::with(['ticketType.festival'])->findOrFail($order_id);
 
-        // Solo el propietario puede ver su confirmación
         if ($order->user_id !== Auth::id()) {
             abort(403);
         }
@@ -77,7 +70,6 @@ class OrderController extends Controller
         return view('orders.confirmation', compact('order'));
     }
 
-    // Historial de pedidos del usuario
     public function myOrders()
     {
         $orders = Order::with(['ticketType.festival'])
@@ -86,5 +78,22 @@ class OrderController extends Controller
             ->get();
 
         return view('orders.my-orders', compact('orders'));
+    }
+
+    public function refund($order_id)
+    {
+        $order = Order::findOrFail($order_id);
+
+        if ($order->user_id !== Auth::id()) {
+            abort(403);
+        }
+
+        if ($order->status !== 'confirmed') {
+            return back()->with('error', 'Esta entrada no puede ser devuelta.');
+        }
+
+        $order->update(['status' => 'refunded']);
+
+        return back()->with('success', 'Entrada devuelta correctamente. El reembolso se procesará en 3-5 días hábiles.');
     }
 }

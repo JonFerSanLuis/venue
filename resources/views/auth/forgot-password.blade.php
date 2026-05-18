@@ -1,34 +1,37 @@
 <x-guest-layout>
     <x-auth-card>
-        <x-slot name="logo">
-            <a href="/">
-                <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
-            </a>
-        </x-slot>
 
-        <div class="mb-4 text-sm text-gray-600">
-            {{ __('Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.') }}
+        <div class="mb-6 text-sm text-gray-400">
+            Introduce tu email y te enviaremos un enlace para restablecer tu contraseña.
         </div>
 
-        <!-- Session Status -->
-        <x-auth-session-status class="mb-4" :status="session('status')" />
+        {{-- Mensaje de éxito simulado --}}
+        @if (session('status'))
+            <div class="mb-4 bg-green-900/30 border border-green-500/30 p-3">
+                <p class="text-green-400 text-sm font-bold">¡Enlace enviado! Revisa tu bandeja de entrada.</p>
+            </div>
+        @endif
 
-        <!-- Validation Errors -->
-        <x-auth-validation-errors class="mb-4" :errors="$errors" />
+        @if ($errors->any())
+            <div class="mb-4 bg-red-900/30 border border-red-500/30 p-3">
+                <p class="text-red-400 text-sm font-bold">No encontramos ninguna cuenta con ese email.</p>
+            </div>
+        @endif
 
         <form method="POST" action="{{ route('password.email') }}">
             @csrf
 
-            <!-- Email Address -->
             <div>
-                <x-label for="email" :value="__('Email')" />
-
+                <x-label for="email" value="Email" />
                 <x-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus />
             </div>
 
-            <div class="flex items-center justify-end mt-4">
+            <div class="flex items-center justify-between mt-6">
+                <a href="{{ route('login') }}" class="text-sm text-gray-400 hover:text-pink-400 transition-colors">
+                    Volver al login
+                </a>
                 <x-button>
-                    {{ __('Email Password Reset Link') }}
+                    Enviar enlace
                 </x-button>
             </div>
         </form>

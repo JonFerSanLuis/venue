@@ -9,17 +9,20 @@ class Artist extends Model
 {
     use HasFactory;
 
-    // Le decimos a Laravel qué campos se pueden rellenar desde el formulario
     protected $fillable = [
         'name',
         'genre',
         'country',
         'image_url',
+        'bio',
+        'spotify_url',
+        'youtube_url',
     ];
 
     public function festivals()
     {
-        // Un artista asiste a muchos festivales
-        return $this->belongsToMany(Festival::class)->withPivot('performance_start', 'performance_end')->withTimestamps();
+        return $this->belongsToMany(Festival::class)
+            ->withPivot('performance_start', 'performance_end')
+            ->withTimestamps();
     }
 }

@@ -19,10 +19,9 @@
         </div>
     </nav>
 
-    <div class="min-h-screen flex items-center justify-center px-4 pt-20">
+    <div class="min-h-screen flex items-center justify-center px-4 pt-20 pb-20">
         <div class="max-w-lg w-full text-center">
 
-            {{-- Icono check --}}
             <div class="w-24 h-24 rounded-full bg-green-500/10 border border-green-500/30 flex items-center justify-center mx-auto mb-8">
                 <svg class="w-12 h-12 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
@@ -37,10 +36,8 @@
 
             {{-- Ticket visual --}}
             <div class="bg-gray-950 border border-gray-800 text-left overflow-hidden mb-8">
-                {{-- Imagen cabecera --}}
                 <img src="{{ asset('storage/' . $order->ticketType->festival->image_url) }}" class="w-full h-32 object-cover opacity-60">
 
-                {{-- Línea perforada --}}
                 <div class="flex items-center px-6 py-3 border-b border-dashed border-gray-700">
                     <div class="w-4 h-4 rounded-full bg-black border border-gray-700 -ml-8 mr-auto"></div>
                     <span class="text-[10px] font-black uppercase tracking-[0.4em] text-gray-600">Entrada válida</span>
@@ -74,20 +71,18 @@
                     </div>
                 </div>
 
-                {{-- Total --}}
                 <div class="border-t border-dashed border-gray-700 px-6 py-4 flex justify-between items-center">
                     <span class="text-xs font-black uppercase tracking-widest text-gray-500">Total Pagado</span>
                     <span class="text-2xl font-black text-pink-500">{{ number_format($order->total_price, 2) }}€</span>
                 </div>
 
-                {{-- Código de pedido --}}
                 <div class="bg-gray-900 px-6 py-3 text-center">
                     <span class="text-[10px] text-gray-600 uppercase tracking-widest">Nº Pedido: </span>
                     <span class="text-gray-400 font-black tracking-widest text-xs">#{{ str_pad($order->id, 6, '0', STR_PAD_LEFT) }}</span>
                 </div>
             </div>
 
-            <div class="flex gap-4 justify-center">
+            <div class="flex gap-4 justify-center pb-4">
                 <a href="{{ route('festivals.index') }}"
                     class="border border-gray-700 text-gray-300 text-xs font-black uppercase px-6 py-3 tracking-widest hover:border-white hover:text-white transition-all">
                     Ver más Festivales
