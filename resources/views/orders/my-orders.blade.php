@@ -8,26 +8,7 @@
 </head>
 <body class="bg-black text-white font-sans antialiased selection:bg-pink-500 selection:text-white">
 
-    <nav class="fixed top-0 w-full z-50 bg-black/80 backdrop-blur-md border-b border-white/5">
-        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-            <a href="{{ url('/') }}" class="text-2xl font-black tracking-tighter text-white hover:text-pink-500 transition-colors">
-                VENUE<span class="text-pink-500">/</span>
-            </a>
-            <div class="flex items-center gap-6">
-                <a href="{{ route('festivals.index') }}" class="text-sm font-bold uppercase tracking-widest text-gray-300 hover:text-pink-400 transition-colors">Cartelera</a>
-                <a href="{{ route('profile.show') }}" class="text-sm font-bold uppercase tracking-widest text-gray-300 hover:text-pink-400 transition-colors">Mi Perfil</a>
-                @if(Auth::user()->role_id == 1)
-                    <a href="{{ route('dashboard') }}" class="text-sm font-bold uppercase tracking-widest text-gray-300 hover:text-pink-400 transition-colors">Panel Admin</a>
-                @endif
-                <span class="text-gray-600">|</span>
-                <span class="text-sm text-gray-400">Hola, <strong class="text-white">{{ Auth::user()->name }}</strong></span>
-                <form method="POST" action="{{ route('logout') }}" class="inline m-0 p-0">
-                    @csrf
-                    <button type="submit" style="background:none!important;padding:0!important;margin:0!important;border:none!important;box-shadow:none!important;" class="text-sm font-bold uppercase tracking-widest text-gray-300 hover:text-red-400 transition-colors">Salir</button>
-                </form>
-            </div>
-        </div>
-    </nav>
+    @include('partials.navbar', ['active' => 'entradas'])
 
     <div class="min-h-screen pt-28 pb-16 px-4">
         <div class="max-w-4xl mx-auto">
@@ -39,9 +20,7 @@
             </div>
 
             @if(session('success'))
-                <div class="mb-6 bg-green-900/30 border border-green-500/30 text-green-400 p-4 text-xs font-bold uppercase tracking-wide">
-                    {{ session('success') }}
-                </div>
+                <div class="mb-6 bg-green-900/30 border border-green-500/30 text-green-400 p-4 text-xs font-bold uppercase tracking-wide">{{ session('success') }}</div>
             @endif
 
             @if($orders->isEmpty())
@@ -50,9 +29,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"/>
                     </svg>
                     <p class="text-gray-500 uppercase tracking-widest text-sm mb-6">No tienes entradas todavía</p>
-                    <a href="{{ route('festivals.index') }}" class="bg-gradient-to-r from-pink-600 to-red-600 text-white text-xs font-black uppercase px-8 py-3 tracking-widest hover:from-pink-500 hover:to-red-500 transition-all">
-                        Ver Festivales
-                    </a>
+                    <a href="{{ route('festivals.index') }}" class="bg-gradient-to-r from-pink-600 to-red-600 text-white text-xs font-black uppercase px-8 py-3 tracking-widest hover:from-pink-500 hover:to-red-500 transition-all">Ver Festivales</a>
                 </div>
             @else
                 <div class="space-y-5">
@@ -65,12 +42,8 @@
                                 <div class="flex-1 p-5">
                                     <div class="flex justify-between items-start flex-wrap gap-3">
                                         <div>
-                                            <h3 class="font-black text-white uppercase tracking-tight text-xl leading-none">
-                                                {{ $order->ticketType->festival->name }}
-                                            </h3>
-                                            <p class="text-gray-400 text-xs uppercase tracking-widest mt-1">
-                                                {{ $order->ticketType->festival->location }} · {{ \Carbon\Carbon::parse($order->ticketType->festival->date)->format('d M Y') }}
-                                            </p>
+                                            <h3 class="font-black text-white uppercase tracking-tight text-xl leading-none">{{ $order->ticketType->festival->name }}</h3>
+                                            <p class="text-gray-400 text-xs uppercase tracking-widest mt-1">{{ $order->ticketType->festival->location }} · {{ \Carbon\Carbon::parse($order->ticketType->festival->date)->format('d M Y') }}</p>
                                         </div>
                                         @if($order->status === 'refunded')
                                             <span class="bg-gray-800 border border-gray-700 text-gray-400 text-[10px] font-black uppercase px-3 py-1 tracking-widest">Devuelta</span>
@@ -78,7 +51,6 @@
                                             <span class="bg-green-500/10 border border-green-500/30 text-green-400 text-[10px] font-black uppercase px-3 py-1 tracking-widest">Confirmado</span>
                                         @endif
                                     </div>
-
                                     <div class="mt-4 flex flex-wrap gap-6 text-sm border-t border-gray-800 pt-4 items-end">
                                         <div>
                                             <p class="text-[10px] text-gray-500 uppercase tracking-widest font-bold">Tipo</p>
@@ -100,7 +72,6 @@
                                             <p class="text-[10px] text-gray-500 uppercase tracking-widest font-bold">Fecha compra</p>
                                             <p class="text-gray-400 font-bold mt-0.5">{{ $order->created_at->format('d M Y') }}</p>
                                         </div>
-
                                         @if($order->status === 'confirmed')
                                             <div class="ml-auto">
                                                 <form action="{{ route('orders.refund', $order->id) }}" method="POST" class="refund-form">
@@ -124,7 +95,7 @@
         </div>
     </div>
 
-    {{-- MODAL DE CONFIRMACIÓN PERSONALIZADO --}}
+    {{-- MODAL DE CONFIRMACIÓN --}}
     <div id="modal-confirm" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
         <div class="bg-gray-950 border border-gray-800 max-w-sm w-full p-8 shadow-2xl">
             <div class="w-12 h-12 rounded-full bg-red-500/10 border border-red-500/30 flex items-center justify-center mb-5">
@@ -135,44 +106,31 @@
             <h3 id="modal-title" class="text-white font-black uppercase tracking-tight text-lg mb-2"></h3>
             <p id="modal-desc" class="text-gray-400 text-sm mb-8"></p>
             <div class="flex gap-3">
-                <button onclick="cerrarModal()" class="flex-1 border border-gray-700 text-gray-300 text-xs font-black uppercase py-3 tracking-widest hover:border-white hover:text-white transition-all" style="background:none!important;border-radius:0!important;box-shadow:none!important;">
-                    Cancelar
-                </button>
-                <button id="modal-confirm-btn" class="flex-1 bg-red-600 hover:bg-red-500 text-white text-xs font-black uppercase py-3 tracking-widest transition-all" style="border-radius:0!important;box-shadow:none!important;border:none!important;">
-                    Confirmar
-                </button>
+                <button onclick="cerrarModal()" class="flex-1 border border-gray-700 text-gray-300 text-xs font-black uppercase py-3 tracking-widest hover:border-white hover:text-white transition-all" style="background:none!important;border-radius:0!important;box-shadow:none!important;">Cancelar</button>
+                <button id="modal-confirm-btn" class="flex-1 bg-red-600 hover:bg-red-500 text-white text-xs font-black uppercase py-3 tracking-widest transition-all" style="border-radius:0!important;box-shadow:none!important;border:none!important;">Confirmar</button>
             </div>
         </div>
     </div>
 
     <script>
         let pendingForm = null;
-
         function confirmarAccion(form, titulo, descripcion) {
             pendingForm = form;
             document.getElementById('modal-title').textContent = titulo;
             document.getElementById('modal-desc').textContent = descripcion;
             document.getElementById('modal-confirm').classList.remove('hidden');
         }
-
         function cerrarModal() {
             document.getElementById('modal-confirm').classList.add('hidden');
             pendingForm = null;
         }
-
         document.getElementById('modal-confirm-btn').addEventListener('click', function () {
-            if (pendingForm) {
-                pendingForm.submit();
-            }
+            if (pendingForm) pendingForm.submit();
         });
-
         document.getElementById('modal-confirm').addEventListener('click', function(e) {
             if (e.target === this) cerrarModal();
         });
-
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') cerrarModal();
-        });
+        document.addEventListener('keydown', function(e) { if (e.key === 'Escape') cerrarModal(); });
     </script>
 
 </body>

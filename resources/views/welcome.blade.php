@@ -20,11 +20,13 @@
 
     <div class="absolute inset-0 bg-gradient-to-br from-black via-black/70 to-pink-900/50 mix-blend-multiply z-10 pointer-events-none"></div>
 
-    {{-- NAVBAR --}}
+    {{-- NAVBAR TRANSPARENTE (solo para el home) --}}
     <nav class="absolute top-0 w-full z-50 p-6 pointer-events-auto">
         <div class="container mx-auto flex justify-between items-center px-4">
             <div class="text-3xl font-black tracking-tighter text-white">VENUE<span class="text-pink-500">/</span></div>
             <div class="flex items-center gap-6">
+                <a href="{{ route('festivals.index') }}" class="text-sm font-bold uppercase tracking-widest text-gray-300 hover:text-pink-400 transition">Cartelera</a>
+                <a href="{{ route('artists.index') }}" class="text-sm font-bold uppercase tracking-widest text-gray-300 hover:text-pink-400 transition">Artistas</a>
                 @auth
                     @if(Auth::user()->role_id == 1)
                         <a href="{{ route('dashboard') }}" class="text-sm font-bold uppercase tracking-widest text-gray-300 hover:text-pink-400 transition">Panel Admin</a>
@@ -35,8 +37,8 @@
                     <form method="POST" action="{{ route('logout') }}" class="inline m-0 p-0">
                         @csrf
                         <button type="submit"
-                            class="text-sm font-bold uppercase tracking-widest text-gray-300 hover:text-red-400 transition leading-none"
-                            style="background:none!important;border:none!important;box-shadow:none!important;padding:0!important;margin:0!important;">
+                            style="background:none!important;border:none!important;box-shadow:none!important;padding:0!important;margin:0!important;"
+                            class="text-sm font-bold uppercase tracking-widest text-gray-300 hover:text-red-400 transition leading-none">
                             Salir
                         </button>
                     </form>
@@ -48,7 +50,6 @@
         </div>
     </nav>
 
-    {{-- HERO --}}
     <div class="relative h-full flex items-center justify-center z-20 pointer-events-none">
         <div class="text-center px-4 max-w-5xl mx-auto mt-16 pointer-events-auto">
 
@@ -65,7 +66,6 @@
                 Descubre los mejores festivales, consulta el lineup completo y hazte con tus entradas antes de que se agoten.
             </p>
 
-            {{-- Solo el botón de ver festivales en el centro --}}
             <div class="flex justify-center mt-8">
                 <a href="{{ url('/festivales') }}" class="group relative px-8 py-4 bg-gradient-to-r from-pink-600 to-red-600 text-white font-black uppercase tracking-widest text-lg transition-all hover:scale-[1.02] shadow-[0_0_15px_rgba(236,72,153,0.3)] hover:shadow-[0_0_25px_rgba(236,72,153,0.5)]">
                     Ver Festivales
@@ -80,7 +80,6 @@
         document.addEventListener('DOMContentLoaded', function () {
             const slides = document.querySelectorAll('#slideshow .slide');
             let currentSlide = 0;
-
             function nextSlide() {
                 slides[currentSlide].classList.remove('opacity-100');
                 slides[currentSlide].classList.add('opacity-0');
@@ -88,7 +87,6 @@
                 slides[currentSlide].classList.remove('opacity-0');
                 slides[currentSlide].classList.add('opacity-100');
             }
-
             setInterval(nextSlide, 5000);
         });
     </script>

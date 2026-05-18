@@ -8,16 +8,7 @@
 </head>
 <body class="bg-black text-white font-sans antialiased selection:bg-pink-500 selection:text-white">
 
-    <nav class="fixed top-0 w-full z-50 bg-black/80 backdrop-blur-md border-b border-white/5">
-        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-            <a href="{{ url('/') }}" class="text-2xl font-black tracking-tighter text-white hover:text-pink-500 transition-colors">
-                VENUE<span class="text-pink-500">/</span>
-            </a>
-            <a href="{{ route('orders.my-orders') }}" class="text-sm font-bold uppercase tracking-widest text-gray-300 hover:text-pink-400 transition-colors">
-                Mis Entradas
-            </a>
-        </div>
-    </nav>
+    @include('partials.navbar', ['active' => 'entradas'])
 
     <div class="min-h-screen flex items-center justify-center px-4 pt-20 pb-20">
         <div class="max-w-lg w-full text-center">
@@ -34,16 +25,13 @@
                 Tu entrada para <strong class="text-white">{{ $order->ticketType->festival->name }}</strong> está confirmada. Te hemos enviado un resumen a <strong class="text-white">{{ $order->buyer_email }}</strong>.
             </p>
 
-            {{-- Ticket visual --}}
             <div class="bg-gray-950 border border-gray-800 text-left overflow-hidden mb-8">
                 <img src="{{ asset('storage/' . $order->ticketType->festival->image_url) }}" class="w-full h-32 object-cover opacity-60">
-
                 <div class="flex items-center px-6 py-3 border-b border-dashed border-gray-700">
                     <div class="w-4 h-4 rounded-full bg-black border border-gray-700 -ml-8 mr-auto"></div>
                     <span class="text-[10px] font-black uppercase tracking-[0.4em] text-gray-600">Entrada válida</span>
                     <div class="w-4 h-4 rounded-full bg-black border border-gray-700 -mr-8 ml-auto"></div>
                 </div>
-
                 <div class="p-6 grid grid-cols-2 gap-4">
                     <div>
                         <p class="text-[10px] text-gray-500 uppercase tracking-widest font-bold">Evento</p>
@@ -70,12 +58,10 @@
                         <p class="text-white font-bold text-sm mt-1">{{ $order->quantity }} entrada{{ $order->quantity > 1 ? 's' : '' }}</p>
                     </div>
                 </div>
-
                 <div class="border-t border-dashed border-gray-700 px-6 py-4 flex justify-between items-center">
                     <span class="text-xs font-black uppercase tracking-widest text-gray-500">Total Pagado</span>
                     <span class="text-2xl font-black text-pink-500">{{ number_format($order->total_price, 2) }}€</span>
                 </div>
-
                 <div class="bg-gray-900 px-6 py-3 text-center">
                     <span class="text-[10px] text-gray-600 uppercase tracking-widest">Nº Pedido: </span>
                     <span class="text-gray-400 font-black tracking-widest text-xs">#{{ str_pad($order->id, 6, '0', STR_PAD_LEFT) }}</span>

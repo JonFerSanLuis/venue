@@ -23,19 +23,19 @@
             background-color: rgba(255, 255, 255, 0.05) !important;
             border: 1px solid rgba(236, 72, 153, 0.3) !important;
             color: white !important;
-            border-radius: 0.5rem !important;
+            border-radius: 0 !important;
             padding: 0.75rem 1rem !important;
             width: 100% !important;
             transition: all 0.3s ease !important;
         }
-        /* Brillo rosa intenso al hacer clic en la caja */
+        /* Brillo rosa al hacer clic en la caja */
         input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focus {
             border-color: #ec4899 !important;
-            box-shadow: 0 0 10px rgba(236,72,153,0.5) !important;
+            box-shadow: 0 0 10px rgba(236,72,153,0.3) !important;
             outline: none !important;
             background-color: rgba(255, 255, 255, 0.1) !important;
         }
-        /* Arregla el enlace de "¿Olvidaste tu contraseña?" */
+        /* Links */
         a {
             color: #9ca3af;
             text-decoration: none;
@@ -44,21 +44,22 @@
         a:hover {
             color: #ec4899 !important;
         }
-        /* Botón principal */
+        /* Botón principal — sin bordes redondeados, sin neon */
         button {
             background-color: #db2777 !important;
             color: white !important;
             text-transform: uppercase !important;
             letter-spacing: 0.1em !important;
             font-weight: bold !important;
-            padding: 0.75rem 1.5rem !important;
-            border-radius: 0.5rem !important;
+            padding: 0.6rem 1.5rem !important;
+            border-radius: 0 !important;
             margin-top: 1.5rem !important;
-            transition: all 0.3s !important;
+            transition: background-color 0.2s !important;
+            box-shadow: none !important;
         }
         button:hover {
             background-color: #be185d !important;
-            box-shadow: 0 0 15px rgba(236,72,153,0.6) !important;
+            box-shadow: none !important;
         }
     </style>
 </head>
@@ -83,7 +84,7 @@
             <p class="text-pink-500 font-bold uppercase tracking-[0.3em] text-xs mt-3">Portal de Acceso</p>
         </div>
 
-        <div class="w-full sm:max-w-md px-10 py-10 bg-black/60 backdrop-blur-xl border border-gray-800 shadow-[0_0_50px_rgba(236,72,153,0.15)] sm:rounded-2xl relative overflow-hidden">
+        <div class="w-full sm:max-w-md px-10 py-10 bg-black/60 backdrop-blur-xl border border-gray-800 shadow-[0_0_50px_rgba(236,72,153,0.15)] relative overflow-hidden">
 
             <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-pink-600 to-yellow-500 shadow-[0_0_10px_rgba(236,72,153,0.8)]"></div>
 

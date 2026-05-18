@@ -12,37 +12,8 @@
 </head>
 <body class="bg-black text-white font-sans antialiased selection:bg-pink-500 selection:text-white">
 
-    <nav class="fixed top-0 w-full z-50 bg-black/80 backdrop-blur-md border-b border-white/5">
-        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-            <a href="{{ url('/') }}" class="text-2xl font-black tracking-tighter text-white hover:text-pink-500 transition-colors">
-                VENUE<span class="text-pink-500">/</span>
-            </a>
-            <div class="flex items-center gap-6">
-                <a href="{{ route('festivals.index') }}" class="text-sm font-bold uppercase tracking-widest text-gray-300 hover:text-pink-400 transition-colors">Cartelera</a>
-                <a href="{{ route('artists.index') }}" class="text-sm font-bold uppercase tracking-widest text-pink-500">Artistas</a>
-                @auth
-                    <a href="{{ route('profile.show') }}" class="text-sm font-bold uppercase tracking-widest text-gray-300 hover:text-pink-400 transition-colors">Mi Perfil</a>
-                    <a href="{{ route('orders.my-orders') }}" class="text-sm font-bold uppercase tracking-widest text-gray-300 hover:text-pink-400 transition-colors">Mis Entradas</a>
-                    @if(Auth::user()->role_id == 1)
-                        <a href="{{ route('dashboard') }}" class="text-sm font-bold uppercase tracking-widest text-gray-300 hover:text-pink-400 transition-colors">Panel Admin</a>
-                    @endif
-                    <span class="text-gray-700">|</span>
-                    <span class="text-sm text-gray-400">{{ Auth::user()->name }}</span>
-                    <form method="POST" action="{{ route('logout') }}" class="inline m-0 p-0">
-                        @csrf
-                        <button type="submit" style="background:none!important;border:none!important;box-shadow:none!important;padding:0!important;margin:0!important;"
-                            class="text-sm font-bold uppercase tracking-widest text-gray-300 hover:text-red-400 transition-colors leading-none">Salir</button>
-                    </form>
-                @else
-                    <span class="text-gray-700">|</span>
-                    <a href="{{ route('login') }}" class="text-sm font-bold uppercase tracking-widest text-gray-300 hover:text-pink-400 transition-colors">Entrar</a>
-                    <a href="{{ route('register') }}" class="border border-pink-500 text-pink-500 px-4 py-1.5 text-sm font-bold uppercase tracking-widest hover:bg-pink-500 hover:text-white transition-all">Registro</a>
-                @endauth
-            </div>
-        </div>
-    </nav>
+    @include('partials.navbar', ['active' => 'artistas'])
 
-    {{-- HERO --}}
     <div class="pt-32 pb-16 text-center px-4 relative">
         <div class="absolute inset-0 bg-gradient-to-b from-pink-900/10 to-transparent pointer-events-none"></div>
         <span class="block text-pink-500 font-bold uppercase tracking-[0.4em] text-xs mb-3">Talento en directo</span>
@@ -52,7 +23,6 @@
         <p class="text-gray-400 mt-4 text-sm uppercase tracking-widest">{{ $artists->count() }} artistas · Temporada 2026</p>
     </div>
 
-    {{-- FILTROS --}}
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
         <div class="flex flex-col sm:flex-row gap-4 items-center justify-between">
             <input type="text" id="search-name" placeholder="Buscar por nombre..."
@@ -67,7 +37,6 @@
         </div>
     </div>
 
-    {{-- GRID --}}
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-24">
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 fade-in">
             @forelse($artists as $artist)
@@ -75,23 +44,16 @@
                     class="artist-card group bg-gray-950 border border-gray-800 hover:border-pink-600 transition-all duration-300 overflow-hidden block"
                     data-name="{{ strtolower($artist->name) }}"
                     data-genre="{{ strtolower($artist->genre ?? '') }}">
-
                     <div class="relative h-56 overflow-hidden">
-                        <img src="{{ asset('storage/' . ($artist->image_url ?? 'default.jpg')) }}"
-                             alt="{{ $artist->name }}"
+                        <img src="{{ asset('storage/' . ($artist->image_url ?? 'default.jpg')) }}" alt="{{ $artist->name }}"
                              class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 opacity-80 group-hover:opacity-100">
                         <div class="absolute inset-0 bg-gradient-to-t from-gray-950 via-transparent to-transparent"></div>
                         @if($artist->genre)
-                            <span class="absolute top-3 right-3 bg-black/60 text-pink-400 text-[10px] font-black uppercase px-2 py-1 tracking-widest border border-pink-500/30">
-                                {{ $artist->genre }}
-                            </span>
+                            <span class="absolute top-3 right-3 bg-black/60 text-pink-400 text-[10px] font-black uppercase px-2 py-1 tracking-widest border border-pink-500/30">{{ $artist->genre }}</span>
                         @endif
                     </div>
-
                     <div class="p-5">
-                        <h3 class="font-black text-white uppercase tracking-tight text-lg leading-none group-hover:text-pink-400 transition-colors">
-                            {{ $artist->name }}
-                        </h3>
+                        <h3 class="font-black text-white uppercase tracking-tight text-lg leading-none group-hover:text-pink-400 transition-colors">{{ $artist->name }}</h3>
                         @if($artist->country)
                             <p class="text-gray-500 text-xs uppercase tracking-widest mt-1">{{ $artist->country }}</p>
                         @endif
@@ -114,40 +76,32 @@
                 </div>
             @endforelse
         </div>
-
         <div id="no-results" class="hidden text-center py-24">
             <p class="text-gray-500 uppercase tracking-widest text-sm">No se encontraron artistas con ese filtro.</p>
         </div>
     </div>
+
+    @include('partials.footer')
 
     <script>
         const searchInput = document.getElementById('search-name');
         const genreSelect = document.getElementById('filter-genre');
         const cards = document.querySelectorAll('.artist-card');
         const noResults = document.getElementById('no-results');
-
         function filtrar() {
             const nombre = searchInput.value.toLowerCase();
             const genero = genreSelect.value.toLowerCase();
             let visibles = 0;
-
             cards.forEach(card => {
                 const matchNombre = card.dataset.name.includes(nombre);
                 const matchGenero = genero === '' || card.dataset.genre === genero;
-                if (matchNombre && matchGenero) {
-                    card.style.display = '';
-                    visibles++;
-                } else {
-                    card.style.display = 'none';
-                }
+                if (matchNombre && matchGenero) { card.style.display = ''; visibles++; }
+                else { card.style.display = 'none'; }
             });
-
             noResults.classList.toggle('hidden', visibles > 0);
         }
-
         searchInput.addEventListener('input', filtrar);
         genreSelect.addEventListener('change', filtrar);
     </script>
-
 </body>
 </html>

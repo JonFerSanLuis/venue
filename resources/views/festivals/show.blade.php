@@ -8,40 +8,8 @@
 </head>
 <body class="bg-black text-white font-sans antialiased selection:bg-pink-500 selection:text-white">
 
-    {{-- NAVBAR --}}
-    <nav class="fixed top-0 w-full z-50 bg-black/80 backdrop-blur-md border-b border-white/5">
-        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-            <a href="{{ url('/') }}" class="text-2xl font-black tracking-tighter text-white hover:text-pink-500 transition-colors">
-                VENUE<span class="text-pink-500">/</span>
-            </a>
-            <div class="flex items-center gap-6">
-                <a href="{{ route('festivals.index') }}" class="text-sm font-bold uppercase tracking-widest text-gray-300 hover:text-pink-400 transition-colors">
-                    ← Cartelera
-                </a>
-                @auth
-                    <a href="{{ route('orders.my-orders') }}" class="text-sm font-bold uppercase tracking-widest text-gray-300 hover:text-pink-400 transition-colors">
-                        Mis Entradas
-                    </a>
-                    @if(Auth::user()->role_id == 1)
-                        <a href="{{ route('dashboard') }}" class="text-sm font-bold uppercase tracking-widest text-gray-300 hover:text-pink-400 transition-colors">
-                            Panel Admin
-                        </a>
-                    @endif
-                    <form method="POST" action="{{ route('logout') }}" class="inline m-0">
-                        @csrf
-                        <button type="submit" style="background:none!important;padding:0!important;margin:0!important;border:none!important;box-shadow:none!important;" class="text-sm font-bold uppercase tracking-widest text-gray-500 hover:text-red-400 transition-colors">
-                            Salir
-                        </button>
-                    </form>
-                @else
-                    <a href="{{ route('login') }}" class="text-sm font-bold uppercase tracking-widest text-gray-300 hover:text-pink-400 transition-colors">Entrar</a>
-                    <a href="{{ route('register') }}" class="border border-pink-500 text-pink-500 px-4 py-1.5 text-sm font-bold uppercase tracking-widest hover:bg-pink-500 hover:text-white transition-all">Registro</a>
-                @endauth
-            </div>
-        </div>
-    </nav>
+    @include('partials.navbar', ['active' => 'cartelera'])
 
-    {{-- HERO --}}
     <div class="relative h-[60vh] overflow-hidden">
         <img src="{{ asset('storage/' . $festival->image_url) }}" class="w-full h-full object-cover opacity-40">
         <div class="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent"></div>
@@ -63,10 +31,8 @@
 
     <div class="max-w-7xl mx-auto px-6 py-16 grid grid-cols-1 lg:grid-cols-3 gap-12">
 
-        {{-- COLUMNA IZQUIERDA: Lineup --}}
         <div class="lg:col-span-2">
             <h2 class="text-xs font-black uppercase tracking-[0.4em] text-pink-500 mb-6">Lineup Oficial</h2>
-
             @if($festival->artists->isEmpty())
                 <p class="text-gray-500 uppercase tracking-widest text-sm">Cartel por confirmar.</p>
             @else
@@ -74,12 +40,8 @@
                     @foreach($festival->artists as $artist)
                         <div class="flex items-center gap-5 bg-gray-950 border border-gray-800 p-4 hover:border-pink-600/50 transition-colors">
                             <div class="text-center w-20 shrink-0">
-                                <span class="block font-black text-2xl text-white leading-none">
-                                    {{ \Carbon\Carbon::parse($artist->pivot->performance_start)->format('H:i') }}
-                                </span>
-                                <span class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">
-                                    a {{ \Carbon\Carbon::parse($artist->pivot->performance_end)->format('H:i') }}
-                                </span>
+                                <span class="block font-black text-2xl text-white leading-none">{{ \Carbon\Carbon::parse($artist->pivot->performance_start)->format('H:i') }}</span>
+                                <span class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">a {{ \Carbon\Carbon::parse($artist->pivot->performance_end)->format('H:i') }}</span>
                             </div>
                             <div class="w-px h-12 bg-gray-800 shrink-0"></div>
                             <img src="{{ asset('storage/' . ($artist->image_url ?? 'default.jpg')) }}" class="w-14 h-14 object-cover rounded-sm border border-gray-700 shrink-0">
@@ -94,16 +56,11 @@
             @endif
         </div>
 
-        {{-- COLUMNA DERECHA: Entradas --}}
         <div>
             <h2 class="text-xs font-black uppercase tracking-[0.4em] text-pink-500 mb-6">Entradas</h2>
-
             @if(session('error'))
-                <div class="mb-4 bg-red-900/30 border border-red-500/30 text-red-400 p-3 text-xs font-bold uppercase tracking-wide">
-                    {{ session('error') }}
-                </div>
+                <div class="mb-4 bg-red-900/30 border border-red-500/30 text-red-400 p-3 text-xs font-bold uppercase tracking-wide">{{ session('error') }}</div>
             @endif
-
             @if($festival->ticketTypes->isEmpty())
                 <p class="text-gray-500 text-sm uppercase tracking-widest">Entradas próximamente.</p>
             @else
@@ -114,16 +71,11 @@
                                 <div>
                                     <h3 class="font-black text-white uppercase tracking-tight text-lg">{{ $type->name }}</h3>
                                     <p class="text-gray-500 text-xs uppercase tracking-widest mt-1">
-                                        @if($type->isAvailable())
-                                            {{ $type->availableCount() }} disponibles
-                                        @else
-                                            Agotado
-                                        @endif
+                                        @if($type->isAvailable()) {{ $type->availableCount() }} disponibles @else Agotado @endif
                                     </p>
                                 </div>
                                 <span class="text-2xl font-black text-pink-500">{{ number_format($type->price, 2) }}€</span>
                             </div>
-
                             @if($type->isAvailable())
                                 @auth
                                     <a href="{{ route('orders.checkout', [$festival->id, $type->id]) }}"
@@ -131,15 +83,13 @@
                                         Comprar Entrada
                                     </a>
                                 @else
-                                    <a href="{{ route('login') }}"
+                                    <a href="{{ route('login') }}?redirect={{ urlencode('/festivales/' . $festival->id . '/comprar/' . $type->id) }}"
                                         class="block w-full text-center border border-pink-500 text-pink-500 text-xs font-black uppercase py-3 tracking-widest hover:bg-pink-500 hover:text-white transition-all">
                                         Inicia sesión para comprar
                                     </a>
                                 @endauth
                             @else
-                                <span class="block w-full text-center bg-gray-800 text-gray-500 text-xs font-black uppercase py-3 tracking-widest cursor-not-allowed">
-                                    Agotado
-                                </span>
+                                <span class="block w-full text-center bg-gray-800 text-gray-500 text-xs font-black uppercase py-3 tracking-widest cursor-not-allowed">Agotado</span>
                             @endif
                         </div>
                     @endforeach
@@ -147,6 +97,8 @@
             @endif
         </div>
     </div>
+
+    @include('partials.footer')
 
 </body>
 </html>

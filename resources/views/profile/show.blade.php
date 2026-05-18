@@ -8,25 +8,7 @@
 </head>
 <body class="bg-black text-white font-sans antialiased selection:bg-pink-500 selection:text-white">
 
-    <nav class="fixed top-0 w-full z-50 bg-black/80 backdrop-blur-md border-b border-white/5">
-        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-            <a href="{{ url('/') }}" class="text-2xl font-black tracking-tighter text-white hover:text-pink-500 transition-colors">
-                VENUE<span class="text-pink-500">/</span>
-            </a>
-            <div class="flex items-center gap-6">
-                <a href="{{ route('festivals.index') }}" class="text-sm font-bold uppercase tracking-widest text-gray-300 hover:text-pink-400 transition-colors">Cartelera</a>
-                <a href="{{ route('orders.my-orders') }}" class="text-sm font-bold uppercase tracking-widest text-gray-300 hover:text-pink-400 transition-colors">Mis Entradas</a>
-                @if(Auth::user()->role_id == 1)
-                    <a href="{{ route('dashboard') }}" class="text-sm font-bold uppercase tracking-widest text-gray-300 hover:text-pink-400 transition-colors">Panel Admin</a>
-                @endif
-                <span class="text-gray-600">|</span>
-                <form method="POST" action="{{ route('logout') }}" class="inline m-0 p-0">
-                    @csrf
-                    <button type="submit" style="background:none!important;padding:0!important;margin:0!important;border:none!important;box-shadow:none!important;" class="text-sm font-bold uppercase tracking-widest text-gray-300 hover:text-red-400 transition-colors">Salir</button>
-                </form>
-            </div>
-        </div>
-    </nav>
+    @include('partials.navbar', ['active' => 'perfil'])
 
     <div class="min-h-screen pt-28 pb-20 px-4">
         <div class="max-w-4xl mx-auto">
