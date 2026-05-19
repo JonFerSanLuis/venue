@@ -7,7 +7,7 @@
                 <p class="text-sm text-gray-500 mt-1">Resumen general y gestión de la plataforma</p>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
 
                 <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 flex items-center">
                     <div class="p-3 rounded-full bg-blue-50 text-blue-600 mr-4">
@@ -15,7 +15,7 @@
                     </div>
                     <div>
                         <p class="text-sm font-medium text-gray-500">Total Festivales</p>
-                        <p class="text-2xl font-bold text-gray-900">{{ count($festivals) }}</p>
+                        <p class="text-2xl font-bold text-gray-900">{{ $festivalesCount }}</p>
                     </div>
                 </div>
 
@@ -35,7 +35,7 @@
                     </div>
                     <div>
                         <p class="text-sm font-medium text-gray-500">Artistas</p>
-                        <p class="text-2xl font-bold text-gray-900">{{ $artistsCount }}</p>
+                        <p class="text-2xl font-bold text="gray-900">{{ $artistsCount }}</p>
                     </div>
                 </div>
 
@@ -49,26 +49,37 @@
                     </div>
                 </div>
 
+                <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 flex items-center">
+                    <div class="p-3 rounded-full bg-green-50 text-green-600 mr-4">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    </div>
+                    <div>
+                        <p class="text-sm font-medium text-gray-500">Ingresos Totales</p>
+                        <p class="text-2xl font-bold text-gray-900">{{ number_format($totalIngresos, 0, ',', '.') }}€</p>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 flex items-center">
+                    <div class="p-3 rounded-full bg-yellow-50 text-yellow-600 mr-4">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"></path></svg>
+                    </div>
+                    <div>
+                        <p class="text-sm font-medium text-gray-500">Entradas Vendidas</p>
+                        <p class="text-2xl font-bold text-gray-900">{{ $entradasVendidas }}</p>
+                    </div>
+                </div>
+
             </div>
 
             {{-- FESTIVALES --}}
             <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
                 <div class="px-6 py-4 border-b border-gray-200 bg-gray-50 flex justify-between items-center">
                     <h2 class="text-lg font-semibold text-gray-800">Listado de Festivales</h2>
-                    <div class="flex items-center gap-3">
-                        <a href="{{ route('festivals.create') }}" class="flex items-center gap-2 bg-gray-900 hover:bg-black text-white px-4 py-2 rounded-sm shadow-sm text-sm font-medium transition-colors">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" /></svg>
-                            Añadir Festival
-                        </a>
-                        <div class="relative">
-                            <input type="text" id="search-festivals" placeholder="Buscar festival..." class="border border-gray-300 rounded-md pl-3 pr-10 py-1.5 text-sm focus:ring-gray-900 focus:border-gray-900 block w-full sm:text-sm">
-                            <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                                <svg class="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                            </div>
-                        </div>
-                    </div>
+                    <a href="{{ route('festivals.create') }}" class="flex items-center gap-2 bg-gray-900 hover:bg-black text-white px-4 py-2 rounded-sm shadow-sm text-sm font-medium transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" /></svg>
+                        Añadir Festival
+                    </a>
                 </div>
-
                 <div class="overflow-x-auto">
                     <table class="w-full whitespace-nowrap text-left text-sm text-gray-600">
                         <thead class="bg-white border-b border-gray-200">
@@ -81,7 +92,7 @@
                         </thead>
                         <tbody class="divide-y divide-gray-100">
                             @forelse($festivals as $festival)
-                                <tr class="hover:bg-gray-50 transition-colors festival-row">
+                                <tr class="hover:bg-gray-50 transition-colors">
                                     <td class="px-6 py-4">
                                         <div class="flex items-center gap-4">
                                             <img src="{{ asset('storage/' . $festival->image_url) }}" class="w-12 h-12 rounded object-cover border border-gray-200 shadow-sm">
@@ -115,26 +126,22 @@
                         </tbody>
                     </table>
                 </div>
+                @if($festivals->hasPages())
+                    <div class="px-6 py-4 border-t border-gray-200">
+                        {{ $festivals->links() }}
+                    </div>
+                @endif
             </div>
 
             {{-- ARTISTAS --}}
             <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden mt-8">
                 <div class="px-6 py-4 border-b border-gray-200 bg-gray-50 flex justify-between items-center">
                     <h2 class="text-lg font-semibold text-gray-800">Listado de Artistas</h2>
-                    <div class="flex items-center gap-3">
-                        <a href="{{ route('artists.create') }}" class="flex items-center gap-2 bg-gray-900 hover:bg-black text-white px-4 py-2 rounded-sm shadow-sm text-sm font-medium transition-colors">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" /></svg>
-                            Añadir Artista
-                        </a>
-                        <div class="relative">
-                            <input type="text" id="search-artists" placeholder="Buscar artista..." class="border border-gray-300 rounded-md pl-3 pr-10 py-1.5 text-sm focus:ring-gray-900 focus:border-gray-900 block w-full sm:text-sm">
-                            <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                                <svg class="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                            </div>
-                        </div>
-                    </div>
+                    <a href="{{ route('artists.create') }}" class="flex items-center gap-2 bg-gray-900 hover:bg-black text-white px-4 py-2 rounded-sm shadow-sm text-sm font-medium transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" /></svg>
+                        Añadir Artista
+                    </a>
                 </div>
-
                 <div class="overflow-x-auto">
                     <table class="w-full whitespace-nowrap text-left text-sm text-gray-600">
                         <thead class="bg-white border-b border-gray-200">
@@ -147,7 +154,7 @@
                         </thead>
                         <tbody class="divide-y divide-gray-100">
                             @forelse($artists as $artist)
-                                <tr class="hover:bg-gray-50 transition-colors artist-row">
+                                <tr class="hover:bg-gray-50 transition-colors">
                                     <td class="px-6 py-4">
                                         <div class="flex items-center gap-4">
                                             <img src="{{ asset('storage/' . ($artist->image_url ?? 'default.jpg')) }}" class="w-12 h-12 rounded object-cover border border-gray-200 shadow-sm">
@@ -181,6 +188,21 @@
                             @endforelse
                         </tbody>
                     </table>
+                </div>
+                @if($artists->hasPages())
+                    <div class="px-6 py-4 border-t border-gray-200">
+                        {{ $artists->links() }}
+                    </div>
+                @endif
+            </div>
+
+            {{-- RECINTOS --}}
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden mt-8">
+                <div class="px-6 py-4 border-b border-gray-200 bg-gray-50 flex justify-between items-center">
+                    <h2 class="text-lg font-semibold text-gray-800">Recintos</h2>
+                    <a href="{{ route('locations.index') }}" class="flex items-center gap-2 bg-gray-900 hover:bg-black text-white px-4 py-2 rounded-sm shadow-sm text-sm font-medium transition-colors">
+                        Gestionar Recintos
+                    </a>
                 </div>
             </div>
 
@@ -237,29 +259,6 @@
 
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') cerrarModalConfirm();
-        });
-
-        // Buscadores
-        document.addEventListener('DOMContentLoaded', function () {
-            const searchFestivals = document.getElementById('search-festivals');
-            if (searchFestivals) {
-                searchFestivals.addEventListener('input', function(e) {
-                    const term = e.target.value.toLowerCase();
-                    document.querySelectorAll('.festival-row').forEach(row => {
-                        row.style.display = row.innerText.toLowerCase().includes(term) ? '' : 'none';
-                    });
-                });
-            }
-
-            const searchArtists = document.getElementById('search-artists');
-            if (searchArtists) {
-                searchArtists.addEventListener('input', function(e) {
-                    const term = e.target.value.toLowerCase();
-                    document.querySelectorAll('.artist-row').forEach(row => {
-                        row.style.display = row.innerText.toLowerCase().includes(term) ? '' : 'none';
-                    });
-                });
-            }
         });
     </script>
 </x-app-layout>

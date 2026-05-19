@@ -20,6 +20,11 @@ class OrderController extends Controller
         $festival   = Festival::with('ticketTypes')->findOrFail($festival_id);
         $ticketType = TicketType::where('festival_id', $festival_id)->findOrFail($ticket_type_id);
 
+        if ($festival->date < now()->toDateString()) {
+            return redirect()->route('festivals.show', $festival_id)
+                ->with('error', 'Este festival ya ha tenido lugar. No se pueden comprar entradas.');
+        }
+
         if (!$ticketType->isAvailable()) {
             return redirect()->route('festivals.show', $festival_id)
                 ->with('error', 'Lo sentimos, este tipo de entrada está agotado.');
@@ -30,6 +35,12 @@ class OrderController extends Controller
 
     public function store(Request $request, $festival_id, $ticket_type_id)
     {
+        $festival = Festival::findOrFail($festival_id);
+        if ($festival->date < now()->toDateString()) {
+            return redirect()->route('festivals.show', $festival_id)
+                ->with('error', 'Este festival ya ha tenido lugar. No se pueden comprar entradas.');
+        }
+
         $ticketType = TicketType::where('festival_id', $festival_id)->findOrFail($ticket_type_id);
 
         $request->validate([
@@ -38,6 +49,20 @@ class OrderController extends Controller
             'buyer_email' => 'required|email|max:255',
             'buyer_phone' => 'nullable|string|max:20',
         ]);
+
+        $entradasCompradas = Order::where('user_id', Auth::id())
+            ->whereHas('ticketType', function($q) use ($festival_id) {
+                $q->where('festival_id', $festival_id);
+            })
+            ->where('status', 'confirmed')
+            ->sum('quantity');
+
+        if ($entradasCompradas + $request->quantity > 10) {
+            $disponibles = 10 - $entradasCompradas;
+            return back()->withErrors([
+                'quantity' => "Solo puedes comprar $disponibles entradas más para este festival (máximo 10 por usuario)."
+            ])->withInput();
+        }
 
         if ($ticketType->availableCount() < $request->quantity) {
             return back()->withErrors([
@@ -65,6 +90,11 @@ class OrderController extends Controller
 
         if ($order->user_id !== Auth::id()) {
             abort(403);
+        }
+
+        if (!$order->ticketType || !$order->ticketType->festival) {
+            return redirect()->route('orders.my-orders')
+                ->with('error', 'No se puede mostrar esta confirmación.');
         }
 
         return view('orders.confirmation', compact('order'));

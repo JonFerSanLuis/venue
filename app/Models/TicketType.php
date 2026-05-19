@@ -21,10 +21,9 @@ class TicketType extends Model
         return $this->hasMany(Order::class);
     }
 
-    // Entradas vendidas
     public function soldCount()
     {
-        return $this->orders()->sum('quantity');
+        return $this->orders()->where('status', 'confirmed')->sum('quantity');
     }
 
     // Entradas disponibles

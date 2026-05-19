@@ -28,8 +28,18 @@
                                 <input type="text" name="name" value="{{ $festival->name }}" class="w-full border-gray-300 py-3 px-4 rounded-sm text-sm focus:ring-gray-900 focus:border-gray-900" required>
                             </div>
                             <div>
-                                <label class="block text-xs font-bold uppercase text-gray-600 mb-2">Ciudad / Recinto</label>
-                                <input type="text" name="location" value="{{ $festival->location }}" class="w-full border-gray-300 py-3 px-4 rounded-sm text-sm focus:ring-gray-900 focus:border-gray-900" required>
+                                <label class="block text-xs font-bold uppercase text-gray-600 mb-2">Recinto</label>
+                                <select name="location_id" class="w-full border-gray-300 py-3 px-4 rounded-sm text-sm focus:ring-gray-900 focus:border-gray-900">
+                                    <option value="">— Sin recinto asignado —</option>
+                                    @foreach($locations as $location)
+                                        <option value="{{ $location->id }}" {{ $festival->location_id == $location->id ? 'selected' : '' }}>
+                                            {{ $location->name }} — {{ $location->city }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                <p class="text-xs text-gray-400 mt-1">
+                                    <a href="{{ route('locations.create') }}" class="underline hover:text-gray-700">+ Crear nuevo recinto</a>
+                                </p>
                             </div>
                             <div>
                                 <label class="block text-xs font-bold uppercase text-gray-600 mb-2">Estilo Principal</label>
@@ -101,7 +111,7 @@
                                 </div>
                             @endforelse
                         </div>
-                        <p class="text-xs text-gray-400 mt-3">⚠ Al guardar se reemplazarán todos los tipos de entrada existentes.</p>
+                        <p class="text-xs text-gray-400 mt-3">Al guardar se reemplazarán todos los tipos de entrada existentes.</p>
                     </div>
                 </div>
 

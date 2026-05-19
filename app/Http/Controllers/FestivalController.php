@@ -4,53 +4,51 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Festival;
+use App\Models\Location;
 use App\Models\TicketType;
 
 class FestivalController extends Controller
 {
-    // Cartelera pública
     public function index()
     {
-        $festivals = Festival::with(['artists', 'ticketTypes'])->latest()->get();
+        $festivals = Festival::with(['artists', 'ticketTypes', 'location'])->latest()->get();
         return view('festivals.index', compact('festivals'));
     }
 
-    // Detalle público de un festival
     public function show($id)
     {
         $festival = Festival::with([
             'artists' => function($query) {
                 $query->orderBy('artist_festival.performance_start', 'asc');
             },
-            'ticketTypes'
+            'ticketTypes',
+            'location'
         ])->findOrFail($id);
 
         return view('festivals.show', compact('festival'));
     }
 
-    // ---- ADMIN ----
-
     public function store(Request $request)
     {
         $request->validate([
-            'name'               => 'required|string|max:255',
-            'location'           => 'required|string|max:255',
-            'style'              => 'required|string|max:255',
-            'start_date'         => 'required|date',
-            'image'              => 'required|image|mimes:jpeg,png,jpg|max:2048',
-            'ticket_names.*'     => 'required|string|max:255',
-            'ticket_prices.*'    => 'required|numeric|min:0',
-            'ticket_quantities.*'=> 'required|integer|min:1',
+            'name'                => 'required|string|max:255',
+            'style'               => 'required|string|max:255',
+            'start_date'          => 'required|date',
+            'image'               => 'required|image|mimes:jpeg,png,jpg|max:2048',
+            'ticket_names.*'      => 'required|string|max:255',
+            'ticket_prices.*'     => 'required|numeric|min:0',
+            'ticket_quantities.*' => 'required|integer|min:1',
         ]);
 
         $imagePath = $request->file('image')->store('festivals', 'public');
 
         $festival = Festival::create([
-            'name'      => $request->name,
-            'location'  => $request->location,
-            'style'     => $request->style,
-            'date'      => $request->start_date,
-            'image_url' => $imagePath,
+            'name'        => $request->name,
+            'location'    => $request->location_id ? Location::find($request->location_id)->city : '',
+            'location_id' => $request->location_id ?: null,
+            'style'       => $request->style,
+            'date'        => $request->start_date,
+            'image_url'   => $imagePath,
         ]);
 
         if ($request->ticket_names) {
@@ -68,8 +66,9 @@ class FestivalController extends Controller
 
     public function edit($id)
     {
-        $festival = Festival::with('ticketTypes')->findOrFail($id);
-        return view('festivals.edit', compact('festival'));
+        $festival  = Festival::with('ticketTypes')->findOrFail($id);
+        $locations = Location::orderBy('name')->get();
+        return view('festivals.edit', compact('festival', 'locations'));
     }
 
     public function update(Request $request, $id)
@@ -77,14 +76,13 @@ class FestivalController extends Controller
         $festival = Festival::findOrFail($id);
 
         $request->validate([
-            'name'               => 'required|string|max:255',
-            'location'           => 'required|string|max:255',
-            'style'              => 'required|string|max:255',
-            'start_date'         => 'required|date',
-            'image'              => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-            'ticket_names.*'     => 'required|string|max:255',
-            'ticket_prices.*'    => 'required|numeric|min:0',
-            'ticket_quantities.*'=> 'required|integer|min:1',
+            'name'                => 'required|string|max:255',
+            'style'               => 'required|string|max:255',
+            'start_date'          => 'required|date',
+            'image'               => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'ticket_names.*'      => 'required|string|max:255',
+            'ticket_prices.*'     => 'required|numeric|min:0',
+            'ticket_quantities.*' => 'required|integer|min:1',
         ]);
 
         if ($request->hasFile('image')) {
@@ -95,10 +93,11 @@ class FestivalController extends Controller
         }
 
         $festival->update([
-            'name'     => $request->name,
-            'location' => $request->location,
-            'style'    => $request->style,
-            'date'     => $request->start_date,
+            'name'        => $request->name,
+            'location'    => $request->location_id ? Location::find($request->location_id)->city : $festival->location,
+            'location_id' => $request->location_id ?: null,
+            'style'       => $request->style,
+            'date'        => $request->start_date,
         ]);
 
         $festival->ticketTypes()->delete();

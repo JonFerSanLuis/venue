@@ -54,6 +54,29 @@
                     @endforeach
                 </div>
             @endif
+            @if($festival->location)
+                <div class="mt-10">
+                    <h2 class="text-xs font-black uppercase tracking-[0.4em] text-pink-500 mb-6">El Recinto</h2>
+                    <div class="bg-gray-950 border border-gray-800 p-6 space-y-4">
+                        <div>
+                            <h3 class="font-black text-white uppercase tracking-tight text-2xl leading-none">{{ $festival->location->name }}</h3>
+                            <p class="text-gray-400 text-sm mt-2">{{ $festival->location->description }}</p>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4 pt-4 border-t border-gray-800">
+                            <div>
+                                <p class="text-[10px] text-gray-600 uppercase tracking-widest font-bold">Dirección</p>
+                                <p class="text-white text-sm mt-1">{{ $festival->location->address }}</p>
+                                <p class="text-gray-400 text-xs">{{ $festival->location->city }}, {{ $festival->location->country }}</p>
+                            </div>
+                            <div>
+                                <p class="text-[10px] text-gray-600 uppercase tracking-widest font-bold">Aforo Máximo</p>
+                                <p class="text-white font-black text-2xl mt-1">{{ number_format($festival->location->capacity) }}</p>
+                                <p class="text-gray-500 text-xs">personas</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @endif
         </div>
 
         <div>
@@ -63,6 +86,10 @@
             @endif
             @if($festival->ticketTypes->isEmpty())
                 <p class="text-gray-500 text-sm uppercase tracking-widest">Entradas próximamente.</p>
+            @elseif(\Carbon\Carbon::parse($festival->date)->isPast())
+                <div class="bg-gray-950 border border-gray-800 p-5">
+                    <p class="text-gray-500 text-xs font-black uppercase tracking-widest">Este festival ya ha tenido lugar. Las entradas no están disponibles.</p>
+                </div>
             @else
                 <div class="space-y-4">
                     @foreach($festival->ticketTypes as $type)

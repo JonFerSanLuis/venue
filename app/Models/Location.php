@@ -8,4 +8,18 @@ use Illuminate\Database\Eloquent\Model;
 class Location extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'name',
+        'address',
+        'city',
+        'country',
+        'capacity',
+        'description',
+    ];
+
+    public function festivals()
+    {
+        return $this->hasMany(Festival::class);
+    }
 }
