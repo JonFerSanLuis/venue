@@ -9,9 +9,15 @@ class Festival extends Model
 {
     use HasFactory;
 
+    public function location()
+    {
+        return $this->belongsTo(\App\Models\Location::class);
+    }
+
     protected $fillable = [
         'name',
         'location',
+        'location_id',
         'style',
         'date',
         'image_url',

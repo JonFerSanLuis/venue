@@ -54,7 +54,7 @@
                     @endforeach
                 </div>
             @endif
-            @if($festival->location)
+            @if($festival->location_id && $festival->location instanceof \App\Models\Location)
                 <div class="mt-10">
                     <h2 class="text-xs font-black uppercase tracking-[0.4em] text-pink-500 mb-6">El Recinto</h2>
                     <div class="bg-gray-950 border border-gray-800 p-6 space-y-4">
