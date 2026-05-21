@@ -45,7 +45,7 @@
                     data-name="{{ strtolower($artist->name) }}"
                     data-genre="{{ strtolower($artist->genre ?? '') }}">
                     <div class="relative h-56 overflow-hidden">
-                        <img src="{{ asset('storage/' . ($artist->image_url ?? 'default.jpg')) }}" alt="{{ $artist->name }}"
+                        <img src="{{ $artist->image }}" alt="{{ $artist->name }}"
                              class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 opacity-80 group-hover:opacity-100">
                         <div class="absolute inset-0 bg-gradient-to-t from-gray-950 via-transparent to-transparent"></div>
                         @if($artist->genre)

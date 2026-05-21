@@ -9,6 +9,14 @@ class Artist extends Model
 {
     use HasFactory;
 
+    public function getImageAttribute(): string
+    {
+        if (str_starts_with($this->image_url ?? '', 'http')) {
+            return $this->image_url;
+        }
+        return asset('storage/' . ($this->image_url ?? 'default.jpg'));
+    }
+
     protected $fillable = [
         'name',
         'genre',

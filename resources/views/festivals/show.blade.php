@@ -11,7 +11,7 @@
     @include('partials.navbar', ['active' => 'cartelera'])
 
     <div class="relative h-[60vh] overflow-hidden">
-        <img src="{{ asset('storage/' . $festival->image_url) }}" class="w-full h-full object-cover opacity-40">
+        <img src="{{ $festival->image }}" class="w-full h-full object-cover opacity-40">
         <div class="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent"></div>
         <div class="absolute bottom-0 left-0 right-0 p-10 max-w-7xl mx-auto">
             <span class="text-pink-500 text-xs font-black uppercase tracking-[0.4em]">{{ $festival->style }}</span>
@@ -44,8 +44,7 @@
                                 <span class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">a {{ \Carbon\Carbon::parse($artist->pivot->performance_end)->format('H:i') }}</span>
                             </div>
                             <div class="w-px h-12 bg-gray-800 shrink-0"></div>
-                            <img src="{{ asset('storage/' . ($artist->image_url ?? 'default.jpg')) }}" class="w-14 h-14 object-cover rounded-sm border border-gray-700 shrink-0">
-                            <div>
+                            <img src="{{ $artist->image }}" class="w-14 h-14 object-cover rounded-sm border border-gray-700 shrink-0">                            <div>
                                 <h3 class="font-black text-white uppercase tracking-tight text-lg leading-none">{{ $artist->name }}</h3>
                                 <p class="text-pink-500 text-xs font-bold uppercase tracking-widest mt-1">{{ $artist->genre ?? 'Artista' }}</p>
                                 <p class="text-gray-500 text-xs uppercase tracking-widest">{{ $artist->country ?? '' }}</p>

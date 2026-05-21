@@ -95,8 +95,7 @@
                                 <tr class="hover:bg-gray-50 transition-colors">
                                     <td class="px-6 py-4">
                                         <div class="flex items-center gap-4">
-                                            <img src="{{ asset('storage/' . $festival->image_url) }}" class="w-12 h-12 rounded object-cover border border-gray-200 shadow-sm">
-                                            <div>
+                                            <img src="{{ $festival->image }}" class="w-12 h-12 rounded object-cover border border-gray-200 shadow-sm">                                            <div>
                                                 <div class="font-semibold text-gray-900 text-base">{{ $festival->name }}</div>
                                                 <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800 mt-1">{{ $festival->style }}</span>
                                             </div>
@@ -157,8 +156,7 @@
                                 <tr class="hover:bg-gray-50 transition-colors">
                                     <td class="px-6 py-4">
                                         <div class="flex items-center gap-4">
-                                            <img src="{{ asset('storage/' . ($artist->image_url ?? 'default.jpg')) }}" class="w-12 h-12 rounded object-cover border border-gray-200 shadow-sm">
-                                            <div>
+                                            <img src="{{ $artist->image }}" class="w-12 h-12 rounded object-cover border border-gray-200 shadow-sm">                                            <div>
                                                 <div class="font-semibold text-gray-900 text-base">{{ $artist->name }}</div>
                                                 <span class="text-xs text-gray-500">ID: #{{ str_pad($artist->id, 4, '0', STR_PAD_LEFT) }}</span>
                                             </div>

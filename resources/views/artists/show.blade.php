@@ -11,7 +11,7 @@
     @include('partials.navbar', ['active' => 'artistas'])
 
     <div class="relative h-[50vh] overflow-hidden">
-        <img src="{{ asset('storage/' . ($artist->image_url ?? 'default.jpg')) }}" class="w-full h-full object-cover opacity-30">
+        <img src="{{ $artist->image }}" class="w-full h-full object-cover opacity-30">
         <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
         <div class="absolute bottom-0 left-0 right-0 p-10 max-w-7xl mx-auto">
             @if($artist->genre)
@@ -61,8 +61,7 @@
                             @foreach($artist->festivals as $festival)
                                 <a href="{{ route('festivals.show', $festival->id) }}"
                                     class="flex items-center gap-4 bg-gray-950 border border-gray-800 p-4 hover:border-pink-600/50 transition-colors group">
-                                    <img src="{{ asset('storage/' . $festival->image_url) }}" class="w-14 h-14 object-cover border border-gray-700 shrink-0">
-                                    <div class="flex-1">
+                                    <img src="{{ $festival->image }}" class="w-14 h-14 object-cover border border-gray-700 shrink-0">                                    <div class="flex-1">
                                         <h3 class="font-black text-white uppercase tracking-tight group-hover:text-pink-400 transition-colors">{{ $festival->name }}</h3>
                                         <p class="text-gray-500 text-xs uppercase tracking-widest mt-0.5">{{ $festival->location }} · {{ \Carbon\Carbon::parse($festival->date)->format('d M Y') }}</p>
                                     </div>

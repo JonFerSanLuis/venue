@@ -15,10 +15,10 @@ class CreateArtistsTable extends Migration
     {
         Schema::create('artists', function (Blueprint $table) {
             $table->id();
-            $table->string('name'); // <--- Faltaba esta (o se llamaba diferente)
+            $table->string('name');
             $table->string('genre')->nullable();
             $table->string('country')->nullable();
-            $table->string('image_url')->nullable();
+            $table->string('image_url', 500)->nullable();
             $table->timestamps();
         });
     }

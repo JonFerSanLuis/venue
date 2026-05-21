@@ -14,6 +14,14 @@ class Festival extends Model
         return $this->belongsTo(\App\Models\Location::class);
     }
 
+    public function getImageAttribute(): string
+    {
+        if (str_starts_with($this->image_url ?? '', 'http')) {
+            return $this->image_url;
+        }
+        return asset('storage/' . $this->image_url);
+    }
+
     protected $fillable = [
         'name',
         'location',

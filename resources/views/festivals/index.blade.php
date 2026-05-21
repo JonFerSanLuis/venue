@@ -46,7 +46,7 @@
                      data-name="{{ strtolower($festival->name) }}"
                      data-style="{{ strtolower($festival->style ?? '') }}">
                     <div class="relative h-64 overflow-hidden">
-                        <img src="{{ asset('storage/' . $festival->image_url) }}" alt="{{ $festival->name }}"
+                        <img src="{{ $festival->image }}" alt="{{ $festival->name }}"
                              class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-75 group-hover:opacity-100">
                         <div class="absolute top-4 left-4 bg-pink-600 text-white text-[10px] font-black uppercase px-3 py-1 tracking-widest shadow-lg">
                             {{ \Carbon\Carbon::parse($festival->date)->format('d M Y') }}
@@ -79,8 +79,7 @@
                         @endif
 
                         <div class="grid grid-cols-2 gap-3">
-                            <button onclick="abrirModal('{{ asset('storage/' . $festival->image_url) }}', '{{ addslashes($festival->name) }}')"
-                                class="w-full bg-transparent border border-gray-700 text-white text-[10px] font-black uppercase py-3 tracking-widest hover:border-white hover:bg-white hover:text-black transition-all">
+                            <button onclick="abrirModal('{{ $festival->image }}', '{{ addslashes($festival->name) }}')"                                class="w-full bg-transparent border border-gray-700 text-white text-[10px] font-black uppercase py-3 tracking-widest hover:border-white hover:bg-white hover:text-black transition-all">
                                 Ver Cartelera
                             </button>
                             <a href="{{ route('festivals.show', $festival->id) }}"
