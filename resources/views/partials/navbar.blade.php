@@ -120,30 +120,32 @@
 </nav>
 
 <script>
-function toggleMenu() {
-    var menu = document.getElementById('mobile-menu');
-    if (menu.style.display === 'none' || menu.style.display === '') {
-        menu.style.display = 'flex';
-    } else {
-        menu.style.display = 'none';
+    function toggleMenu() {
+        var menu = document.getElementById('mobile-menu');
+        if (menu.style.display === 'none' || menu.style.display === '') {
+            menu.style.display = 'flex';
+        } else {
+            menu.style.display = 'none';
+        }
     }
-}
 
-function checkWidth() {
-    var toggle = document.getElementById('menu-toggle');
-    var desktop = document.getElementById('desktop-menu');
-    var mobile = document.getElementById('mobile-menu');
+    function checkWidth() {
+        var toggle = document.getElementById('menu-toggle');
+        var desktop = document.getElementById('desktop-menu');
+        var mobile = document.getElementById('mobile-menu');
 
-    if (window.innerWidth < 1024) {
-        toggle.style.display = 'flex';
-        desktop.style.display = 'none';
-    } else {
-        toggle.style.display = 'none';
-        desktop.style.display = 'flex';
-        mobile.style.display = 'none';
+        if (window.innerWidth < 1024) {
+            toggle.style.display = 'flex';
+            desktop.style.display = 'none';
+        } else {
+            toggle.style.display = 'none';
+            desktop.style.display = 'flex';
+            mobile.style.display = 'none';
+        }
     }
-}
 
-checkWidth();
-window.addEventListener('resize', checkWidth);
-</script>
+    document.addEventListener('DOMContentLoaded', function() {
+        checkWidth();
+    });
+    window.addEventListener('resize', checkWidth);
+    </script>
