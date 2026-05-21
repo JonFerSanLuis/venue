@@ -24,7 +24,16 @@
     <nav class="absolute top-0 w-full z-50 p-6 pointer-events-auto">
         <div class="container mx-auto flex justify-between items-center px-4">
             <div class="text-3xl font-black tracking-tighter text-white">VENUE<span class="text-pink-500">/</span></div>
-            <div class="flex items-center gap-6">
+
+            {{-- Botón hamburguesa --}}
+            <button id="home-menu-toggle" onclick="toggleHomeMenu()" style="display:none; flex-direction:column; gap:5px; background:none; border:none; cursor:pointer; padding:4px;">
+                <span style="display:block; width:24px; height:2px; background:white;"></span>
+                <span style="display:block; width:24px; height:2px; background:white;"></span>
+                <span style="display:block; width:24px; height:2px; background:white;"></span>
+            </button>
+
+            {{-- Menú desktop --}}
+            <div id="home-desktop-menu" class="flex items-center gap-6">
                 <a href="{{ route('festivals.index') }}" class="text-sm font-bold uppercase tracking-widest text-gray-300 hover:text-pink-400 transition">Cartelera</a>
                 <a href="{{ route('artists.index') }}" class="text-sm font-bold uppercase tracking-widest text-gray-300 hover:text-pink-400 transition">Artistas</a>
                 @auth
@@ -36,8 +45,7 @@
                     @endif
                     <form method="POST" action="{{ route('logout') }}" class="inline m-0 p-0">
                         @csrf
-                        <button type="submit"
-                            style="background:none!important;border:none!important;box-shadow:none!important;padding:0!important;margin:0!important;"
+                        <button type="submit" style="background:none!important;border:none!important;box-shadow:none!important;padding:0!important;margin:0!important;"
                             class="text-sm font-bold uppercase tracking-widest text-gray-300 hover:text-red-400 transition leading-none">
                             Salir
                         </button>
@@ -47,6 +55,29 @@
                     <a href="{{ route('register') }}" class="border-2 border-pink-500 text-pink-500 px-6 py-2 text-sm font-bold uppercase tracking-widest hover:bg-pink-500 hover:text-white transition-all">Registro</a>
                 @endauth
             </div>
+        </div>
+
+        {{-- Menú móvil --}}
+        <div id="home-mobile-menu" style="display:none; background:rgba(0,0,0,0.95); margin-top:16px; padding:16px 24px; flex-direction:column; gap:16px;">
+            <a href="{{ route('festivals.index') }}" style="font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; text-decoration:none; color:#d1d5db;">Cartelera</a>
+            <a href="{{ route('artists.index') }}" style="font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; text-decoration:none; color:#d1d5db;">Artistas</a>
+            @auth
+                @if(Auth::user()->role_id == 1)
+                    <a href="{{ route('dashboard') }}" style="font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; text-decoration:none; color:#d1d5db;">Panel Admin</a>
+                @else
+                    <a href="{{ route('profile.show') }}" style="font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; text-decoration:none; color:#d1d5db;">Mi Perfil</a>
+                    <a href="{{ route('orders.my-orders') }}" style="font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; text-decoration:none; color:#d1d5db;">Mis Entradas</a>
+                @endif
+                <form method="POST" action="{{ route('logout') }}" style="margin:0; padding:0;">
+                    @csrf
+                    <button type="submit" style="background:none; border:none; font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; color:#d1d5db; cursor:pointer;">Salir</button>
+                </form>
+            @else
+                <div style="display:flex; flex-direction:column; gap:12px;">
+                    <a href="{{ route('login') }}" style="font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; text-decoration:none; color:#d1d5db;">Login</a>
+                    <a href="{{ route('register') }}" style="border:2px solid #ec4899; color:#ec4899; padding:8px 16px; font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; text-decoration:none; text-align:center;">Registro</a>
+                </div>
+            @endauth
         </div>
     </nav>
 
@@ -77,7 +108,27 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+        function toggleHomeMenu() {
+            var menu = document.getElementById('home-mobile-menu');
+            menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
+        }
+
+        function checkHomeWidth() {
+            var toggle = document.getElementById('home-menu-toggle');
+            var desktop = document.getElementById('home-desktop-menu');
+            var mobile = document.getElementById('home-mobile-menu');
+            if (window.innerWidth < 1024) {
+                toggle.style.display = 'flex';
+                desktop.style.display = 'none';
+            } else {
+                toggle.style.display = 'none';
+                desktop.style.display = 'flex';
+                mobile.style.display = 'none';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            checkHomeWidth();
             const slides = document.querySelectorAll('#slideshow .slide');
             let currentSlide = 0;
             function nextSlide() {
@@ -89,6 +140,8 @@
             }
             setInterval(nextSlide, 5000);
         });
+
+        window.addEventListener('resize', checkHomeWidth);
     </script>
 
 </body>
