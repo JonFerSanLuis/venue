@@ -26,8 +26,7 @@
             </p>
 
             <div class="bg-gray-950 border border-gray-800 text-left overflow-hidden mb-8">
-                <img src="{{ asset('storage/' . $order->ticketType->festival->image_url) }}" class="w-full h-32 object-cover opacity-60">
-                <div class="flex items-center px-6 py-3 border-b border-dashed border-gray-700">
+                <img src="{{ $order->ticketType->festival->image }}" class="w-full h-32 object-cover opacity-60">                <div class="flex items-center px-6 py-3 border-b border-dashed border-gray-700">
                     <div class="w-4 h-4 rounded-full bg-black border border-gray-700 -ml-8 mr-auto"></div>
                     <span class="text-[10px] font-black uppercase tracking-[0.4em] text-gray-600">Entrada válida</span>
                     <div class="w-4 h-4 rounded-full bg-black border border-gray-700 -mr-8 ml-auto"></div>

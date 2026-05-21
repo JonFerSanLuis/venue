@@ -40,19 +40,14 @@
                     </div>
                 @endif
 
-                @if($artist->youtube_url)
-                    <div>
-                        <h2 class="text-xs font-black uppercase tracking-[0.4em] text-pink-500 mb-4">En directo</h2>
-                        <div class="relative w-full" style="padding-bottom: 56.25%;">
-                            <iframe
-                                src="{{ preg_replace('/(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)/', 'https://www.youtube.com/embed/$1', $artist->youtube_url) }}"
-                                class="absolute inset-0 w-full h-full border border-gray-800"
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                allowfullscreen>
-                            </iframe>
-                        </div>
+                <div>
+                    <h2 class="text-xs font-black uppercase tracking-[0.4em] text-pink-500 mb-4">Imagen del artista</h2>
+                    <div class="relative w-full overflow-hidden border border-gray-800" style="padding-bottom: 56.25%;">
+                        <img src="{{ $artist->image }}"
+                             alt="{{ $artist->name }}"
+                             class="absolute inset-0 w-full h-full object-cover object-top">
                     </div>
-                @endif
+                </div>
 
                 @if($artist->festivals->count() > 0)
                     <div>
